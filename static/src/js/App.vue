@@ -1,19 +1,38 @@
 <script setup>
-import Counter from "./Counter.vue"
+import Layout from "./Layout.vue";
+import PaginatedTable from "./PaginatedTable.vue";
+
+const headings = [
+  {
+    key: "given_name",
+    display: "First Name",
+  },
+  {
+    key: "surname",
+    display: "Surname",
+  },
+  {
+    key: "dateOfBirth",
+    display: "Date of Birth",
+  },
+  {
+    key: "nationality",
+    display: "Nationality",
+  },
+];
 </script>
 
 <template>
-    <h1>{{message}}</h1>
-    <counter />
+  <layout>
+    <paginated-table
+      sourceURL="http://ergast.com/api/f1/drivers.json"
+      :headings="headings"
+    />
+  </layout>
 </template>
 
 <script>
 export default {
-  components: { Counter },
-  data() {
-    return {
-      message: JSON.parse(document.getElementById("vue-message").textContent),
-    };
-  },
+  components: { Layout, PaginatedTable },
 };
 </script>

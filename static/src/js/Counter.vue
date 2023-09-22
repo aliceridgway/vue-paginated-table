@@ -1,5 +1,5 @@
 <template>
-    <button @click="count++">{{count}}</button>
+  <button @click="count++">{{ count }}</button>
 </template>
 
 <script>

@@ -2,24 +2,12 @@
 {% load django_vite %}
 
 {% block content %}
+<div id="app"></div>
 
 {% vite_hmr_client %}
 {% vite_asset 'js/main.js' %}
 
-{{ vue_message|json_script:"vue-message"}}
-{{ initial_value|json_script:"initial-value"}}
-
-<h2>{{ django_message }}</h2>
-
-<p>This page has been generated from a Django template.</p>
-<p>The CSS was loaded by Vite.</p>
-<p>Everything inside the box was rendered by Vue.</p>
-<p>Vite is a way to integrate Vue into an existing Django project.</p>
-
-<br>
-
-<div id="app">
-
-</div>
-
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 {% endblock %}
+
