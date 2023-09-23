@@ -1,15 +1,12 @@
 <script setup>
 import Layout from "./Layout.vue";
 import PaginatedTable from "./PaginatedTable.vue";
+import ergastAPI from "./ergastAPI";
 
 const headings = [
   {
-    key: "given_name",
-    display: "First Name",
-  },
-  {
-    key: "surname",
-    display: "Surname",
+    key: "name",
+    display: "Name",
   },
   {
     key: "dateOfBirth",
@@ -25,8 +22,12 @@ const headings = [
 <template>
   <layout>
     <paginated-table
-      sourceURL="http://ergast.com/api/f1/drivers.json"
+      tableClass="table table-striped table-hover table-responsive"
       :headings="headings"
+      sourceURL="http://ergast.com/api/f1/drivers.json"
+      :rowsGetter="ergastAPI.rowsGetter"
+      :totalGetter="ergastAPI.totalGetter"
+      :rowsPreProcessor="ergastAPI.rowsPreprocessor"
     />
   </layout>
 </template>
