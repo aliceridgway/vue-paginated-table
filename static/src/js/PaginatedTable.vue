@@ -81,13 +81,13 @@ const props = defineProps({
 const rows = ref([]);
 const total = ref(0);
 const limit = ref(undefined);
-const initialLimit = computed(() => props.resultsPerPageOptions[0])
+const initialLimit = computed(() => props.resultsPerPageOptions[0]);
 
 // Methods
 
 const updateTable = async () => {
-    let _rows
-    let _total
+  let _rows;
+  let _total;
 
   [_total, _rows] = await rowUtils.getRows(
     props.sourceURL,
@@ -96,34 +96,36 @@ const updateTable = async () => {
     props.totalGetter,
     props.rowsGetter,
     props.rowsPreProcessor,
-  )
-  
-  console.log(_rows)
-  console.log(_total)
+  );
 
-  rows.value = _rows
-  total.value = _total
-}
+  console.log(_rows);
+  console.log(_total);
+
+  rows.value = _rows;
+  total.value = _total;
+};
 
 // On Mounted
 onMounted(async () => {
   console.log("I've been mounted!");
-  updateTable()
+  updateTable();
 });
-
-
 </script>
 
 <template>
   <div class="paginated-table">
     <div class="table-wrapper">
-        <DataTable :headings="props.headings" :rows="rows" :tableClass="props.tableClass" />
+      <DataTable
+        :headings="props.headings"
+        :rows="rows"
+        :tableClass="props.tableClass"
+      />
     </div>
     <div class="pagination">
       <ResultsPerPageSelector
         :resultsPerPageOptions="props.resultsPerPageOptions"
         :selected="limit | initialLimit"
-        @results-per-page-selection-changed="callback" 
+        @results-per-page-selection-changed="callback"
       />
       <PageSelector currentPage="4" totalPages="20" />
     </div>

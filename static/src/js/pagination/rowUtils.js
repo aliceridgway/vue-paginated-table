@@ -1,16 +1,23 @@
 import { getSourceData } from "./ajax";
 
-async function getRows(baseURL, headings, limit, totalGetter, rowsGetter, rowsProcessor){
-    console.log("ahoy")
-    const url = `${baseURL}?limit=${limit}`
-    const data = await getSourceData(url);
-    const totalRows = parseInt(totalGetter(data));
-    const rowObjects = rowsGetter(data);
-    const processedRows = rowsProcessor(rowObjects);
-    const sortedRows = sortRowData(processedRows, headings)
+async function getRows(
+  baseURL,
+  headings,
+  limit,
+  totalGetter,
+  rowsGetter,
+  rowsProcessor,
+) {
+  console.log("ahoy");
+  const url = `${baseURL}?limit=${limit}`;
+  const data = await getSourceData(url);
+  const totalRows = parseInt(totalGetter(data));
+  const rowObjects = rowsGetter(data);
+  const processedRows = rowsProcessor(rowObjects);
+  const sortedRows = sortRowData(processedRows, headings);
 
-    return [totalRows, sortedRows]
-}   
+  return [totalRows, sortedRows];
+}
 
 function sortRowData(rows, headings) {
   // For each row, order the data by the ordering defined in the headings array
@@ -20,7 +27,7 @@ function sortRowData(rows, headings) {
 
   const sortedRows = rows.map((row) => sortSingleRow(row, heading_keys));
 
-  return sortedRows
+  return sortedRows;
 }
 
 function sortSingleRow(row, keys) {

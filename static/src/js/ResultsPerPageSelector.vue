@@ -1,5 +1,4 @@
 <script setup>
-
 const props = defineProps({
   resultsPerPageOptions: {
     type: Array,
@@ -21,7 +20,6 @@ if (!props.resultsPerPageOptions.includes(props.selected)) {
     `Invalid value for 'selected' ${props.selected}. resultsPerPageOptions ${props.resultsPerPageOptions} must include the selected value.`,
   );
 }
-
 </script>
 
 <template>
