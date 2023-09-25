@@ -28,7 +28,7 @@ if (!props.resultsPerPageOptions.includes(props.selected)) {
     class="form-select"
     :value="selected"
     :aria-label="label"
-    @change="$emit('results-per-page-selection-changed')"
+    @change="$emit('results-per-page-selection-changed', $event.target.value)"
   >
     <option
       v-for="(option, index) in resultsPerPageOptions"

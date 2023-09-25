@@ -1,6 +1,6 @@
 <script setup>
 // VUE
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 
 // COMPONENTS
 import PageSelector from "./PageSelector.vue";
@@ -10,7 +10,6 @@ import DataTable from "./DataTable.vue";
 import {
   defaultTotalGetter,
   defaultRowsGetter,
-  defaultHttpCodeGetter,
 } from "./pagination/deserialization";
 
 import rowUtils from "./pagination/rowUtils";
@@ -48,13 +47,6 @@ const props = defineProps({
     default: defaultRowsGetter,
   },
 
-  // HTTP CODE GETTER (optional): a function that gets the HTTP code from the response.
-  httpCodeGetter: {
-    type: Function,
-    required: false,
-    default: defaultHttpCodeGetter,
-  },
-
   // ROWS PRE-PROCESSOR (optional): a function that will process row data before rendering them.
   rowsPreProcessor: {
     type: Function,
@@ -80,8 +72,8 @@ const props = defineProps({
 // Initial States
 const rows = ref([]);
 const total = ref(0);
-const limit = ref(undefined);
-const initialLimit = computed(() => props.resultsPerPageOptions[0]);
+const selectedLimit = ref(undefined);
+const limit = computed(() => selectedLimit.value | props.resultsPerPageOptions[0]);
 
 // Methods
 
@@ -92,24 +84,30 @@ const updateTable = async () => {
   [_total, _rows] = await rowUtils.getRows(
     props.sourceURL,
     props.headings,
-    limit.value | initialLimit.value,
+    limit.value,
     props.totalGetter,
     props.rowsGetter,
     props.rowsPreProcessor,
   );
 
-  console.log(_rows);
-  console.log(_total);
-
   rows.value = _rows;
   total.value = _total;
 };
 
+const updateLimit = (newLimit) => {
+    limit.value = newLimit
+}
+
 // On Mounted
 onMounted(async () => {
-  console.log("I've been mounted!");
   updateTable();
 });
+
+watch(limit, async () => {
+    console.log("watcher")
+    updateTable()
+}, { immediate: true })
+
 </script>
 
 <template>
@@ -124,8 +122,8 @@ onMounted(async () => {
     <div class="pagination">
       <ResultsPerPageSelector
         :resultsPerPageOptions="props.resultsPerPageOptions"
-        :selected="limit | initialLimit"
-        @results-per-page-selection-changed="callback"
+        :selected="limit"
+        @results-per-page-selection-changed="updateLimit"
       />
       <PageSelector currentPage="4" totalPages="20" />
     </div>
