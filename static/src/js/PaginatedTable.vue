@@ -1,15 +1,22 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import { fetchRows } from "./pagination/ajax";
+// VUE
+import { ref, onMounted, computed } from "vue";
+
+// COMPONENTS
+import PageSelector from "./PageSelector.vue";
+import ResultsPerPageSelector from "./ResultsPerPageSelector.vue";
+import DataTable from "./DataTable.vue";
+
 import {
   defaultTotalGetter,
   defaultRowsGetter,
   defaultHttpCodeGetter,
 } from "./pagination/deserialization";
-import rowUtils from "./pagination/rowUtils";
-import PageSelector from "./PageSelector.vue";
 
-// Props
+import rowUtils from "./pagination/rowUtils";
+
+// PROPS
+
 const props = defineProps({
   // HEADINGS: an array of objects.
   // e.g. [{
@@ -61,51 +68,63 @@ const props = defineProps({
     required: false,
     default: "table",
   },
+
+  // RESULTS PER PAGE OPTIONS (optional): Array of integers
+  resultsPerPageOptions: {
+    type: Array,
+    required: false,
+    default: [10, 25, 50],
+  },
 });
 
 // Initial States
 const rows = ref([]);
 const total = ref(0);
+const limit = ref(undefined);
+const initialLimit = computed(() => props.resultsPerPageOptions[0])
+
+// Methods
+
+const updateTable = async () => {
+    let _rows
+    let _total
+
+  [_total, _rows] = await rowUtils.getRows(
+    props.sourceURL,
+    props.headings,
+    limit.value | initialLimit.value,
+    props.totalGetter,
+    props.rowsGetter,
+    props.rowsPreProcessor,
+  )
+  
+  console.log(_rows)
+  console.log(_total)
+
+  rows.value = _rows
+  total.value = _total
+}
 
 // On Mounted
 onMounted(async () => {
   console.log("I've been mounted!");
-
-  const data = await fetchRows(props.sourceURL);
-
-  total.value = props.totalGetter(data);
-
-  const rowObjects = props.rowsGetter(data);
-
-  const processedRowObjects = props.rowsPreProcessor(rowObjects);
-
-  rows.value = rowUtils.sortRowData(processedRowObjects, props.headings);
-
-  console.log(data);
+  updateTable()
 });
+
+
 </script>
 
 <template>
   <div class="paginated-table">
     <div class="table-wrapper">
-      <table :class="props.tableClass">
-        <thead>
-          <tr>
-            <th v-for="(heading, index) in headings" :key="index">
-              {{ heading.display }}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(row, index) in rows" :key="index">
-            <td v-for="(rowItem, i) in row" :key="i">
-              {{ rowItem }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
+        <DataTable :headings="props.headings" :rows="rows" :tableClass="props.tableClass" />
     </div>
     <div class="pagination">
+      <ResultsPerPageSelector
+        :resultsPerPageOptions="props.resultsPerPageOptions"
+        :selected="limit | initialLimit"
+        @results-per-page-selection-changed="callback" 
+      />
       <PageSelector currentPage="4" totalPages="20" />
     </div>
   </div>
@@ -121,6 +140,7 @@ onMounted(async () => {
 }
 .table-wrapper {
   overflow-y: scroll;
+  overflow-x: scroll;
   padding-bottom: 1rem;
 }
 .pagination {
