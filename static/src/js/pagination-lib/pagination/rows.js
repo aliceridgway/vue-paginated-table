@@ -1,6 +1,4 @@
-import { getSourceData } from "./ajax";
-
-async function getRows(
+export default async function getRows(
   baseURL,
   headings,
   limit,
@@ -17,6 +15,14 @@ async function getRows(
   const sortedRows = sortRowData(processedRows, headings);
 
   return [totalRows, sortedRows];
+}
+
+async function getSourceData(url) {
+  const response = await fetch(url, {
+    method: "GET",
+  });
+  const data = await response.json();
+  return data;
 }
 
 function sortRowData(rows, headings) {
@@ -36,13 +42,3 @@ function sortSingleRow(row, keys) {
     return key in row ? row[key] : "";
   });
 }
-
-function defaultRowsPreprocessor(rowObjects) {
-  return rowObjects;
-}
-
-export default {
-  getRows,
-  defaultRowsPreprocessor,
-  sortRowData,
-};

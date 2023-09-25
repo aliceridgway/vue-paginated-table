@@ -10,9 +10,10 @@ import DataTable from "./DataTable.vue";
 import {
   defaultTotalGetter,
   defaultRowsGetter,
-} from "./pagination/deserialization";
+  defaultRowsPreprocessor
+} from "./pagination/defaults";
 
-import rowUtils from "./pagination/rowUtils";
+import getRows from "./pagination/rows";
 
 // PROPS
 
@@ -48,10 +49,11 @@ const props = defineProps({
   },
 
   // ROWS PRE-PROCESSOR (optional): a function that will process row data before rendering them.
+  // e.g. you want to format a date field before rendering
   rowsPreProcessor: {
     type: Function,
     required: false,
-    default: rowUtils.defaultRowsPreprocessor,
+    default: defaultRowsPreprocessor,
   },
 
   // TABLE CLASS (optional): style the table with one or more classes that will be applied to the table element.
@@ -81,7 +83,7 @@ const updateTable = async () => {
   let _rows;
   let _total;
 
-  [_total, _rows] = await rowUtils.getRows(
+  [_total, _rows] = await getRows(
     props.sourceURL,
     props.headings,
     limit.value,

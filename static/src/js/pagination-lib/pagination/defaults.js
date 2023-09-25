@@ -30,3 +30,7 @@ export function defaultHttpCodeGetter(response) {
   }
   return response[key];
 }
+
+export function defaultRowsPreprocessor(rowObjects) {
+  return rowObjects;
+}

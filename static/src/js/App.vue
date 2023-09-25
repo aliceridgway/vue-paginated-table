@@ -1,6 +1,6 @@
 <script setup>
 import Layout from "./Layout.vue";
-import PaginatedTable from "./PaginatedTable.vue";
+import PaginatedTable from "./pagination-lib/PaginatedTable.vue"
 import ergastAPI from "./ergastAPI";
 
 const headings = [
