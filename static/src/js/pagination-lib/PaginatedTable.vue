@@ -10,7 +10,7 @@ import DataTable from "./DataTable.vue";
 import {
   defaultTotalGetter,
   defaultRowsGetter,
-  defaultRowsPreprocessor
+  defaultRowsPreprocessor,
 } from "./pagination/defaults";
 
 import getRows from "./pagination/rows";
@@ -75,7 +75,9 @@ const props = defineProps({
 const rows = ref([]);
 const total = ref(0);
 const selectedLimit = ref(undefined);
-const limit = computed(() => selectedLimit.value | props.resultsPerPageOptions[0]);
+const limit = computed(
+  () => selectedLimit.value | props.resultsPerPageOptions[0],
+);
 
 // Methods
 
@@ -97,8 +99,8 @@ const updateTable = async () => {
 };
 
 const updateLimit = (newLimit) => {
-    limit.value = newLimit
-}
+  selectedLimit.value = newLimit;
+};
 
 // On Mounted
 onMounted(async () => {
@@ -106,10 +108,9 @@ onMounted(async () => {
 });
 
 watch(limit, async () => {
-    console.log("watcher")
-    updateTable()
-}, { immediate: true })
-
+  console.log("watcher");
+  updateTable();
+});
 </script>
 
 <template>

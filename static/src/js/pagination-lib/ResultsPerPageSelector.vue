@@ -1,4 +1,7 @@
 <script setup>
+import { defineEmits } from "vue";
+const emit = defineEmits(["resultsPerPageSelectionChanged"]);
+
 const props = defineProps({
   resultsPerPageOptions: {
     type: Array,
