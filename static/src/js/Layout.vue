@@ -38,12 +38,15 @@ export default {
   display: flex;
   width: 100vw;
   height: 100vh;
-  overflow-y: hidden;
+  overflow-y: scroll;
   margin: 0;
   padding: 0;
+  position: relative;
 }
 
 .main-content-slot {
   padding: 2rem;
+  width: 100%;
+  overflow-y: scroll;
 }
 </style>

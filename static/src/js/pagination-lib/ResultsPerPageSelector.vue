@@ -26,22 +26,37 @@ if (!props.resultsPerPageOptions.includes(props.selected)) {
 </script>
 
 <template>
-  <select
+  <div class="results-per-page-selector">
+    <select
     id="results-per-page-select"
     class="form-select"
     :value="selected"
     :aria-label="label"
     @change="$emit('results-per-page-selection-changed', $event.target.value)"
-  >
-    <option
-      v-for="(option, index) in resultsPerPageOptions"
-      :value="option"
-      :key="index"
     >
-      {{ option }}
-    </option>
-  </select>
-  <label for="results-per-page-select">
-    {{ label }}
-  </label>
+      <option
+        v-for="(option, index) in resultsPerPageOptions"
+        :value="option"
+        :key="index"
+      >
+        {{ option }}
+      </option>
+    </select>
+    <label for="results-per-page-select">
+      {{ label }}
+    </label>
+  </div>
+
 </template>
+
+<style scoped>
+.results-per-page-selector {
+  display: flex;
+  align-items: center;
+}
+
+#results-per-page-select {
+  width: fit-content;
+  margin-right: 0.5rem;
+}
+</style>

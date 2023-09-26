@@ -76,7 +76,7 @@ const rows = ref([]);
 const total = ref(0);
 const selectedLimit = ref(undefined);
 const limit = computed(
-  () => selectedLimit.value | props.resultsPerPageOptions[0],
+  () => selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
 );
 
 // Methods
@@ -135,7 +135,7 @@ watch(limit, async () => {
 
 <style scoped>
 .paginated-table {
-  height: 100%;
+  height: fit-content;
   width: 100%;
   position: relative;
   display: flex;
@@ -150,6 +150,9 @@ watch(limit, async () => {
   background: white;
   width: 100%;
   padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   position: absolute;
   bottom: 0;
   left: 0;
