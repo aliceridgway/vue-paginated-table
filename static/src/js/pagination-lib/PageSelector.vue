@@ -1,7 +1,7 @@
 <script setup>
 import { defineEmits, defineProps, computed } from "vue";
 
-const emit = defineEmits(["pageNumberChanged"])
+const emit = defineEmits(["pageNumberChanged"]);
 
 // PROPS
 
@@ -30,7 +30,6 @@ const showLeftElipses = computed(() => currentPage.value > 3);
 const showRightElipses = computed(
   () => currentPage.value + 1 < totalPages.value,
 );
-
 </script>
 
 <template>

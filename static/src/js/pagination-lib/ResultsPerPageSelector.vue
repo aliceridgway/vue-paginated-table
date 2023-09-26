@@ -28,11 +28,11 @@ if (!props.resultsPerPageOptions.includes(props.selected)) {
 <template>
   <div class="results-per-page-selector">
     <select
-    id="results-per-page-select"
-    class="form-select"
-    :value="selected"
-    :aria-label="label"
-    @change="$emit('results-per-page-selection-changed', $event.target.value)"
+      id="results-per-page-select"
+      class="form-select"
+      :value="selected"
+      :aria-label="label"
+      @change="$emit('results-per-page-selection-changed', $event.target.value)"
     >
       <option
         v-for="(option, index) in resultsPerPageOptions"
@@ -46,7 +46,6 @@ if (!props.resultsPerPageOptions.includes(props.selected)) {
       {{ label }}
     </label>
   </div>
-
 </template>
 
 <style scoped>

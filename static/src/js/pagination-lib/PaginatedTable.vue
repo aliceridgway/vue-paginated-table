@@ -78,11 +78,11 @@ const page = ref(1);
 
 const selectedLimit = ref(undefined);
 
-const limit = computed(
-  () => selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
+const limit = computed(() =>
+  selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
 );
-const totalPages = computed(() => Math.ceil(total.value / limit.value))
-const offset = computed(() => (page.value - 1) * limit)
+const totalPages = computed(() => Math.ceil(total.value / limit.value));
+const offset = computed(() => (page.value - 1) * limit);
 
 // Methods
 
