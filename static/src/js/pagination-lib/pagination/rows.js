@@ -2,12 +2,12 @@ export default async function getRows(
   baseURL,
   headings,
   limit,
+  offset,
   totalGetter,
   rowsGetter,
   rowsProcessor,
 ) {
-  console.log("ahoy");
-  const url = `${baseURL}?limit=${limit}`;
+  const url = `${baseURL}?limit=${limit}&offset=${offset}`;
   const data = await getSourceData(url);
   const totalRows = parseInt(totalGetter(data));
   const rowObjects = rowsGetter(data);

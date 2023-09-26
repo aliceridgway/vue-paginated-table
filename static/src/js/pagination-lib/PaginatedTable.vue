@@ -73,11 +73,16 @@ const props = defineProps({
 
 // Initial States
 const rows = ref([]);
-const total = ref(0);
+const total = ref(undefined);
+const page = ref(1);
+
 const selectedLimit = ref(undefined);
+
 const limit = computed(
   () => selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
 );
+const totalPages = computed(() => Math.ceil(total.value / limit.value))
+const offset = computed(() => (page.value - 1) * limit)
 
 // Methods
 
@@ -89,6 +94,7 @@ const updateTable = async () => {
     props.sourceURL,
     props.headings,
     limit.value,
+    offset.value,
     props.totalGetter,
     props.rowsGetter,
     props.rowsPreProcessor,
@@ -128,7 +134,7 @@ watch(limit, async () => {
         :selected="limit"
         @results-per-page-selection-changed="updateLimit"
       />
-      <PageSelector currentPage="4" totalPages="20" />
+      <PageSelector :currentPage="page" :totalPages="totalPages" />
     </div>
   </div>
 </template>
