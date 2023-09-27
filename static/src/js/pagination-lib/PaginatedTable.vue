@@ -79,11 +79,11 @@ const page = ref(1);
 
 const selectedLimit = ref(undefined);
 
-const limit = computed(
-  () => selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
+const limit = computed(() =>
+  selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
 );
-const totalPages = computed(() => Math.ceil(total.value / limit.value))
-const offset = computed(() => (page.value - 1) * limit.value)
+const totalPages = computed(() => Math.ceil(total.value / limit.value));
+const offset = computed(() => (page.value - 1) * limit.value);
 
 // Methods
 const updateLimit = (newLimit) => {
@@ -91,7 +91,7 @@ const updateLimit = (newLimit) => {
 };
 
 const updatePage = (newPage) => {
-  page.value = newPage
+  page.value = newPage;
 };
 
 const updateTable = async () => {
@@ -123,7 +123,6 @@ watch(limit, async () => {
 watch(page, async () => {
   updateTable();
 });
-
 </script>
 
 <template>
@@ -131,7 +130,7 @@ watch(page, async () => {
     <div class="paginated-table__header">
       <ResultsPerPageSelector
         :resultsPerPageOptions="props.resultsPerPageOptions"
-        :selected="limit" 
+        :selected="limit"
         @results-per-page-selection-changed="updateLimit"
       />
     </div>
@@ -145,7 +144,11 @@ watch(page, async () => {
     <div class="paginated-table__footer">
       <ResultSummary :limit="limit" :offset="offset" :total="total" />
 
-      <PageSelector :currentPage="page" :totalPages="totalPages" @page-number-changed="updatePage"/>
+      <PageSelector
+        :currentPage="page"
+        :totalPages="totalPages"
+        @page-number-changed="updatePage"
+      />
     </div>
   </div>
 </template>

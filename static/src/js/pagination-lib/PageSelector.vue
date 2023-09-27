@@ -32,16 +32,15 @@ const showRightElipses = computed(
 );
 
 const updatePage = (page) => {
-  emit('page-number-changed', page)
-}
-
+  emit("page-number-changed", page);
+};
 </script>
 
 <template>
   <nav aria-label="...">
     <ul class="pagination">
       <li v-if="!isFirstPage" class="page-item">
-        <a class="page-link" @click="updatePage(currentPage-1)" tabindex="-1"
+        <a class="page-link" @click="updatePage(currentPage - 1)" tabindex="-1"
           >Previous</a
         >
       </li>
@@ -55,15 +54,21 @@ const updatePage = (page) => {
       </li>
 
       <li v-if="!isFirstPage" class="page-item">
-        <a class="page-link" @click="updatePage(currentPage - 1 )">{{ currentPage - 1 }}</a>
+        <a class="page-link" @click="updatePage(currentPage - 1)">{{
+          currentPage - 1
+        }}</a>
       </li>
 
       <li class="page-item active" aria-current="page">
-        <a class="page-link" @click="updatePage(currentPage)">{{ currentPage }}</a>
+        <a class="page-link" @click="updatePage(currentPage)">{{
+          currentPage
+        }}</a>
       </li>
 
       <li v-if="!isLastPage" class="page-item">
-        <a class="page-link" @click="updatePage(currentPage + 1 )">{{ currentPage + 1 }}</a>
+        <a class="page-link" @click="updatePage(currentPage + 1)">{{
+          currentPage + 1
+        }}</a>
       </li>
 
       <li v-if="showRightElipses" class="page-item disabled">
@@ -71,7 +76,9 @@ const updatePage = (page) => {
       </li>
 
       <li v-if="showRightElipses" class="page-item">
-        <a class="page-link" @click="updatePage(totalPages)">{{ totalPages }}</a>
+        <a class="page-link" @click="updatePage(totalPages)">{{
+          totalPages
+        }}</a>
       </li>
 
       <li v-if="!isLastPage" class="page-item">
