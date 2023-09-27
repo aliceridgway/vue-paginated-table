@@ -1,7 +1,7 @@
 <script setup>
 import { defineEmits, defineProps, computed } from "vue";
 
-const emit = defineEmits(["pageNumberChanged"]);
+const emit = defineEmits(["page-number-changed"]);
 
 // PROPS
 
@@ -30,47 +30,52 @@ const showLeftElipses = computed(() => currentPage.value > 3);
 const showRightElipses = computed(
   () => currentPage.value + 1 < totalPages.value,
 );
+
+const updatePage = (page) => {
+  emit('page-number-changed', page)
+}
+
 </script>
 
 <template>
   <nav aria-label="...">
     <ul class="pagination">
       <li v-if="!isFirstPage" class="page-item">
-        <a class="page-link" href="#" tabindex="-1" aria-disabled="true"
+        <a class="page-link" @click="updatePage(currentPage-1)" tabindex="-1"
           >Previous</a
         >
       </li>
 
       <li v-if="showLeftElipses" class="page-item">
-        <a class="page-link" href="#" tabindex="-1">1</a>
+        <a class="page-link" @click="updatePage(1)" tabindex="-1">1</a>
       </li>
 
       <li v-if="showLeftElipses" class="page-item disabled">
-        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">...</a>
+        <a class="page-link" tabindex="-1" aria-disabled="true">...</a>
       </li>
 
       <li v-if="!isFirstPage" class="page-item">
-        <a class="page-link" href="#">{{ currentPage - 1 }}</a>
+        <a class="page-link" @click="updatePage(currentPage - 1 )">{{ currentPage - 1 }}</a>
       </li>
 
       <li class="page-item active" aria-current="page">
-        <a class="page-link" href="#">{{ currentPage }}</a>
+        <a class="page-link" @click="updatePage(currentPage)">{{ currentPage }}</a>
       </li>
 
       <li v-if="!isLastPage" class="page-item">
-        <a class="page-link" href="#">{{ currentPage + 1 }}</a>
+        <a class="page-link" @click="updatePage(currentPage + 1 )">{{ currentPage + 1 }}</a>
       </li>
 
       <li v-if="showRightElipses" class="page-item disabled">
-        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">...</a>
+        <a class="page-link" tabindex="-1" aria-disabled="true">...</a>
       </li>
 
       <li v-if="showRightElipses" class="page-item">
-        <a class="page-link" href="#" tabindex="-1">{{ totalPages }}</a>
+        <a class="page-link" @click="updatePage(totalPages)">{{ totalPages }}</a>
       </li>
 
       <li v-if="!isLastPage" class="page-item">
-        <a class="page-link" href="#">Next</a>
+        <a class="page-link" @click="updatePage(currentPage + 1)">Next</a>
       </li>
     </ul>
   </nav>

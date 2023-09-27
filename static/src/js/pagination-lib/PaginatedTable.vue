@@ -4,6 +4,7 @@ import { ref, onMounted, computed, watch } from "vue";
 
 // COMPONENTS
 import PageSelector from "./PageSelector.vue";
+import ResultSummary from "./ResultSummary.vue";
 import ResultsPerPageSelector from "./ResultsPerPageSelector.vue";
 import DataTable from "./DataTable.vue";
 
@@ -78,13 +79,20 @@ const page = ref(1);
 
 const selectedLimit = ref(undefined);
 
-const limit = computed(() =>
-  selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
+const limit = computed(
+  () => selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
 );
-const totalPages = computed(() => Math.ceil(total.value / limit.value));
-const offset = computed(() => (page.value - 1) * limit);
+const totalPages = computed(() => Math.ceil(total.value / limit.value))
+const offset = computed(() => (page.value - 1) * limit.value)
 
 // Methods
+const updateLimit = (newLimit) => {
+  selectedLimit.value = newLimit;
+};
+
+const updatePage = (newPage) => {
+  page.value = newPage
+};
 
 const updateTable = async () => {
   let _rows;
@@ -104,37 +112,40 @@ const updateTable = async () => {
   total.value = _total;
 };
 
-const updateLimit = (newLimit) => {
-  selectedLimit.value = newLimit;
-};
-
-// On Mounted
 onMounted(async () => {
   updateTable();
 });
 
 watch(limit, async () => {
-  console.log("watcher");
   updateTable();
 });
+
+watch(page, async () => {
+  updateTable();
+});
+
 </script>
 
 <template>
-  <div class="paginated-table">
-    <div class="table-wrapper">
+  <div class="paginated-table shadow p-3 mb-5 bg-body rounded">
+    <div class="paginated-table__header">
+      <ResultsPerPageSelector
+        :resultsPerPageOptions="props.resultsPerPageOptions"
+        :selected="limit" 
+        @results-per-page-selection-changed="updateLimit"
+      />
+    </div>
+    <div class="paginated-table__wrapper">
       <DataTable
         :headings="props.headings"
         :rows="rows"
         :tableClass="props.tableClass"
       />
     </div>
-    <div class="pagination">
-      <ResultsPerPageSelector
-        :resultsPerPageOptions="props.resultsPerPageOptions"
-        :selected="limit"
-        @results-per-page-selection-changed="updateLimit"
-      />
-      <PageSelector :currentPage="page" :totalPages="totalPages" />
+    <div class="paginated-table__footer">
+      <ResultSummary :limit="limit" :offset="offset" :total="total" />
+
+      <PageSelector :currentPage="page" :totalPages="totalPages" @page-number-changed="updatePage"/>
     </div>
   </div>
 </template>
@@ -143,24 +154,40 @@ watch(limit, async () => {
 .paginated-table {
   height: fit-content;
   width: 100%;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
   position: relative;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 }
-.table-wrapper {
+.paginated-table__wrapper {
   overflow-y: scroll;
   overflow-x: scroll;
   padding-bottom: 1rem;
 }
-.pagination {
+.paginated-table__header {
   background: white;
   width: 100%;
   padding: 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  position: absolute;
+  /* position: absolute;
+  top: 0;
+  left: 0; */
+}
+
+.paginated-table__footer {
+  background: white;
+  width: 100%;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* position: absolute;
   bottom: 0;
-  left: 0;
+  left: 0; */
 }
 </style>
