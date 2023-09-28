@@ -24,7 +24,7 @@ if (currentPage > totalPages) {
 }
 
 const isFirstPage = computed(() => currentPage.value === 1);
-const isLastPage = computed(() => currentPage.value === totalPages.value);
+const isLastPage = computed(() => currentPage.value >= totalPages.value);
 
 const showLeftElipses = computed(() => currentPage.value > 3);
 const showRightElipses = computed(
@@ -32,6 +32,13 @@ const showRightElipses = computed(
 );
 
 const updatePage = (page) => {
+
+  const newPage = Math.min(page, totalPages)
+  
+  if (page == newPage){
+    return
+  }
+
   emit("page-number-changed", page);
 };
 </script>

@@ -20,6 +20,10 @@ const headings = [
     key: "nationality",
     display: "Nationality",
   },
+  {
+    key: "url",
+    display: "URL"
+  }
 ];
 </script>
 
@@ -32,7 +36,16 @@ const headings = [
       :rowsGetter="ergastAPI.rowsGetter"
       :totalGetter="ergastAPI.totalGetter"
       :rowsPreProcessor="ergastAPI.rowsPreprocessor"
-    />
+    >
+      <template v-slot="{ rows }">
+        <tr v-for="(row, index) in rows" :key="index">
+          <td v-for="(cell, i) in row" :key="i">
+            {{ cell }}
+          </td>
+        </tr>
+      </template>
+
+    </paginated-table>
   </layout>
 </template>
 

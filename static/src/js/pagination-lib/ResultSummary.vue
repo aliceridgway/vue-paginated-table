@@ -17,13 +17,14 @@ const props = defineProps({
 });
 
 const start = computed(() => props.offset + 1);
-const end = computed(() => start.value + parseInt(props.limit));
+const end = computed(() => Math.min((start.value + parseInt(props.limit)), props.total));
 </script>
 
 <template>
-  <p class="result-summary">
+  <p v-if="props.total > 0" class="result-summary">
     Showing {{ start }} to {{ end }} of {{ total }} results
   </p>
+  <p v-if="props.total == 0">No results found.</p>
 </template>
 
 <style scoped>

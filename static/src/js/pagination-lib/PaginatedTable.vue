@@ -3,13 +3,14 @@
 import { ref, onMounted, computed, watch } from "vue";
 
 // COMPONENTS
+import DefaultRow from "./DefaultRow.vue";
+import Headings from "./Headings.vue";
+import LoadingOverlay from "./LoadingOverlay.vue";
 import PageSelector from "./PageSelector.vue";
+import ProgressBar from "./ProgressBar.vue";
+import ProgressBarPlaceholder from "./ProgressBarPlaceholder.vue";
 import ResultSummary from "./ResultSummary.vue";
 import ResultsPerPageSelector from "./ResultsPerPageSelector.vue";
-import DataTable from "./DataTable.vue";
-import ProgressBarPlaceholder from "./ProgressBarPlaceholder.vue";
-import ProgressBar from "./ProgressBar.vue";
-import LoadingOverlay from "./LoadingOverlay.vue";
 
 import {
   defaultTotalGetter,
@@ -77,7 +78,7 @@ const props = defineProps({
 
 // Initial States
 const rows = ref([]);
-const total = ref(undefined);
+const total = ref(0);
 const page = ref(1);
 
 const showLoadingOverlay = ref(false);
@@ -152,16 +153,20 @@ watch(page, async () => {
     </ProgressBarPlaceholder>
 
     <div class="paginated-table__wrapper">
-      <DataTable
-        :headings="props.headings"
-        :rows="rows"
-        :tableClass="props.tableClass"
-      />
+      <table :class="props.tableClass">
+        <Headings :headings="props.headings" />
+        <tbody>
+          <slot :rows="rows">
+            <DefaultRow v-for="(row, index) in rows" :key="index" />
+          </slot>
+        </tbody>
+      </table>
+
       <LoadingOverlay v-show="showLoadingOverlay" />
     </div>
 
     <div class="paginated-table__footer">
-      <ResultSummary :limit="limit" :offset="offset" :total="total" />
+      <ResultSummary v-show="total > 0" :limit="limit" :offset="offset" :total="total" />
 
       <PageSelector
         :currentPage="page"

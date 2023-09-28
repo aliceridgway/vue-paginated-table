@@ -9,12 +9,21 @@ export default async function getRows(
 ) {
   console.log("ahoy")
   const url = `${baseURL}?limit=${limit}&offset=${offset}`;
-  const data = await getSourceData(url);
-  const totalRows = parseInt(totalGetter(data));
-  const rowObjects = rowsGetter(data);
-  const processedRows = rowsProcessor(rowObjects);
-  const sortedRows = sortRowData(processedRows, headings);
 
+  let totalRows = 0
+  let sortedRows = []
+
+  try {
+    const data = await getSourceData(url);
+    totalRows = parseInt(totalGetter(data));
+    const rowObjects = rowsGetter(data);
+    const processedRows = rowsProcessor(rowObjects);
+    sortedRows = sortRowData(processedRows, headings);
+
+  } catch (error) {
+    console.error(error)
+  }
+  
   return [totalRows, sortedRows];
 }
 
