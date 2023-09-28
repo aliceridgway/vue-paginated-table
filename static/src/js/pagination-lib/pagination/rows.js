@@ -7,12 +7,12 @@ export default async function getRows(
   rowsGetter,
   rowsProcessor,
 ) {
-  console.log("ahoy")
+  console.log("ahoy");
   const url = `${baseURL}?limit=${limit}&offset=${offset}`;
 
-  let totalRows = 0
-  let sortedRows = []
-  let error = false
+  let totalRows = 0;
+  let sortedRows = [];
+  let error = false;
 
   try {
     const data = await getSourceData(url);
@@ -21,9 +21,9 @@ export default async function getRows(
     const processedRows = rowsProcessor(rowObjects);
     sortedRows = sortRowData(processedRows, headings);
   } catch (e) {
-    error = true
+    error = true;
   }
-  
+
   return [totalRows, sortedRows, error];
 }
 

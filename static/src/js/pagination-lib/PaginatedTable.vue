@@ -82,12 +82,12 @@ const props = defineProps({
   defaultErrorMessage: {
     type: String,
     required: false,
-    default: "Error loading table. \nPlease contact support."
-  }
+    default: "Error loading table. \nPlease contact support.",
+  },
 });
 
 // Initial States
-const errorExists = ref(false)
+const errorExists = ref(false);
 const offset = ref(0);
 const rows = ref([]);
 const total = ref(0);
@@ -96,14 +96,19 @@ const requestedLimit = ref(undefined);
 const showProgressBar = ref(false);
 
 // Computed
-const currentPage = computed(() => pages.getCurrentPage(offset.value, limit.value))
+const currentPage = computed(() =>
+  pages.getCurrentPage(offset.value, limit.value),
+);
 const limit = computed(() =>
   requestedLimit.value ? requestedLimit.value : props.resultsPerPageOptions[0],
 );
-const showResultSummary = computed(() => errorExists ? false : total > 0);
-const showLoadingOverlay = computed(() => errorExists ? false : currentPage.value != requestedPage.value);
-const totalPages = computed(() => pages.getTotalPages(total.value, limit.value));
-
+const showResultSummary = computed(() => (errorExists ? false : total > 0));
+const showLoadingOverlay = computed(() =>
+  errorExists ? false : currentPage.value != requestedPage.value,
+);
+const totalPages = computed(() =>
+  pages.getTotalPages(total.value, limit.value),
+);
 
 // Methods
 const updateLimit = (newLimit) => {
@@ -119,7 +124,7 @@ const updateTable = async () => {
   let _total;
   let _offset;
   let _errorExists;
-  
+
   [_total, _rows, _errorExists] = await getRows(
     props.sourceURL,
     props.headings,
@@ -177,12 +182,20 @@ watch(requestedPage, async () => {
       </table>
 
       <LoadingOverlay v-show="showLoadingOverlay" />
-      <ErrorOverlay v-show="errorExists" :error-message="props.defaultErrorMessage"/>
+      <ErrorOverlay
+        v-show="errorExists"
+        :error-message="props.defaultErrorMessage"
+      />
     </div>
 
     <div class="paginated-table__footer">
       <Placeholder>
-        <ResultSummary v-if="showResultSummary" :limit="limit" :offset="offset" :total="total" />
+        <ResultSummary
+          v-if="showResultSummary"
+          :limit="limit"
+          :offset="offset"
+          :total="total"
+        />
       </Placeholder>
 
       <PageSelector
@@ -213,7 +226,7 @@ watch(requestedPage, async () => {
   padding-bottom: 1rem;
 }
 
-.paginated-table__wrapper table{
+.paginated-table__wrapper table {
   min-height: 150px;
 }
 

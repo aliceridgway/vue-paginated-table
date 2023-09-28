@@ -20,7 +20,9 @@ const currentPage = computed(() => parseInt(props.currentPage));
 const totalPages = computed(() => parseInt(props.totalPages));
 
 if (currentPage > totalPages) {
-  throw new Error("currentPage cannot be larger than the total number of pages");
+  throw new Error(
+    "currentPage cannot be larger than the total number of pages",
+  );
 }
 
 const isFirstPage = computed(() => currentPage.value === 1);
@@ -32,11 +34,10 @@ const showRightElipses = computed(
 );
 
 const updatePage = (page) => {
+  const newPage = Math.min(page, totalPages);
 
-  const newPage = Math.min(page, totalPages)
-  
-  if (page == newPage){
-    return
+  if (page == newPage) {
+    return;
   }
 
   emit("page-number-changed", page);

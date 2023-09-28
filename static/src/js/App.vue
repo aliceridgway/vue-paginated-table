@@ -22,8 +22,8 @@ const headings = [
   },
   {
     key: "url",
-    display: "URL"
-  }
+    display: "URL",
+  },
 ];
 </script>
 
@@ -44,7 +44,6 @@ const headings = [
           </td>
         </tr>
       </template>
-
     </paginated-table>
   </layout>
 </template>

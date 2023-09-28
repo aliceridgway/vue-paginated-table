@@ -17,7 +17,9 @@ const props = defineProps({
 });
 
 const start = computed(() => props.offset + 1);
-const end = computed(() => Math.min((start.value + parseInt(props.limit)), props.total));
+const end = computed(() =>
+  Math.min(start.value + parseInt(props.limit), props.total),
+);
 </script>
 
 <template>
