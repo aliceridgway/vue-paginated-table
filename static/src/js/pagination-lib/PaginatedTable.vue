@@ -4,9 +4,11 @@ import { ref, onMounted, computed, watch } from "vue";
 
 // COMPONENTS
 import DefaultRow from "./DefaultRow.vue";
+import ErrorOverlay from "./ErrorOverlay.vue";
 import Headings from "./Headings.vue";
 import LoadingOverlay from "./LoadingOverlay.vue";
 import PageSelector from "./PageSelector.vue";
+import Placeholder from "./Placeholder.vue";
 import ProgressBar from "./ProgressBar.vue";
 import ProgressBarPlaceholder from "./ProgressBarPlaceholder.vue";
 import ResultSummary from "./ResultSummary.vue";
@@ -19,6 +21,7 @@ import {
 } from "./pagination/defaults";
 
 import getRows from "./pagination/rows";
+import pages from "./pagination/pages";
 
 // PROPS
 
@@ -74,38 +77,50 @@ const props = defineProps({
     required: false,
     default: [10, 25, 50],
   },
+
+  // DEFAULT ERROR MESSAGE (optional)
+  defaultErrorMessage: {
+    type: String,
+    required: false,
+    default: "Error loading table. \nPlease contact support."
+  }
 });
 
 // Initial States
+const errorExists = ref(false)
+const offset = ref(0);
 const rows = ref([]);
 const total = ref(0);
-const page = ref(1);
-
-const showLoadingOverlay = ref(false);
+const requestedPage = ref(1);
+const requestedLimit = ref(undefined);
 const showProgressBar = ref(false);
 
-const selectedLimit = ref(undefined);
-
+// Computed
+const currentPage = computed(() => pages.getCurrentPage(offset.value, limit.value))
 const limit = computed(() =>
-  selectedLimit.value ? selectedLimit.value : props.resultsPerPageOptions[0],
+  requestedLimit.value ? requestedLimit.value : props.resultsPerPageOptions[0],
 );
-const totalPages = computed(() => Math.ceil(total.value / limit.value));
-const offset = computed(() => (page.value - 1) * limit.value);
+const showResultSummary = computed(() => errorExists ? false : total > 0);
+const showLoadingOverlay = computed(() => errorExists ? false : currentPage.value != requestedPage.value);
+const totalPages = computed(() => pages.getTotalPages(total.value, limit.value));
+
 
 // Methods
 const updateLimit = (newLimit) => {
-  selectedLimit.value = newLimit;
+  requestedLimit.value = newLimit;
 };
 
 const updatePage = (newPage) => {
-  page.value = newPage;
+  requestedPage.value = newPage;
 };
 
 const updateTable = async () => {
   let _rows;
   let _total;
-
-  [_total, _rows] = await getRows(
+  let _offset;
+  let _errorExists;
+  
+  [_total, _rows, _errorExists] = await getRows(
     props.sourceURL,
     props.headings,
     limit.value,
@@ -117,9 +132,9 @@ const updateTable = async () => {
 
   rows.value = _rows;
   total.value = _total;
+  errorExists.value = _errorExists;
 
   showProgressBar.value = false;
-  showLoadingOverlay.value = false;
 };
 
 onMounted(async () => {
@@ -130,8 +145,7 @@ watch(limit, async () => {
   updateTable();
 });
 
-watch(page, async () => {
-  showLoadingOverlay.value = true;
+watch(requestedPage, async () => {
   setTimeout(async () => {
     await updateTable();
   }, 500);
@@ -155,7 +169,7 @@ watch(page, async () => {
     <div class="paginated-table__wrapper">
       <table :class="props.tableClass">
         <Headings :headings="props.headings" />
-        <tbody>
+        <tbody class="paginated-table__body">
           <slot :rows="rows">
             <DefaultRow v-for="(row, index) in rows" :key="index" />
           </slot>
@@ -163,13 +177,16 @@ watch(page, async () => {
       </table>
 
       <LoadingOverlay v-show="showLoadingOverlay" />
+      <ErrorOverlay v-show="errorExists" :error-message="props.defaultErrorMessage"/>
     </div>
 
     <div class="paginated-table__footer">
-      <ResultSummary v-show="total > 0" :limit="limit" :offset="offset" :total="total" />
+      <Placeholder>
+        <ResultSummary v-if="showResultSummary" :limit="limit" :offset="offset" :total="total" />
+      </Placeholder>
 
       <PageSelector
-        :currentPage="page"
+        :currentPage="currentPage"
         :totalPages="totalPages"
         @page-number-changed="updatePage"
       />
@@ -196,6 +213,10 @@ watch(page, async () => {
   padding-bottom: 1rem;
 }
 
+.paginated-table__wrapper table{
+  min-height: 150px;
+}
+
 .paginated-table__header {
   background: white;
   width: 100%;
@@ -203,6 +224,10 @@ watch(page, async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.paginated-table__body {
+  min-height: 300px;
 }
 .paginated-table__footer {
   background: white;

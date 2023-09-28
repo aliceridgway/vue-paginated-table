@@ -20,7 +20,7 @@ const currentPage = computed(() => parseInt(props.currentPage));
 const totalPages = computed(() => parseInt(props.totalPages));
 
 if (currentPage > totalPages) {
-  throw Error("currentPage cannot be larger than the total number of pages");
+  throw new Error("currentPage cannot be larger than the total number of pages");
 }
 
 const isFirstPage = computed(() => currentPage.value === 1);
