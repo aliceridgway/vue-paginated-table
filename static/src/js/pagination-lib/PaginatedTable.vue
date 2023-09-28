@@ -7,6 +7,9 @@ import PageSelector from "./PageSelector.vue";
 import ResultSummary from "./ResultSummary.vue";
 import ResultsPerPageSelector from "./ResultsPerPageSelector.vue";
 import DataTable from "./DataTable.vue";
+import ProgressBarPlaceholder from "./ProgressBarPlaceholder.vue";
+import ProgressBar from "./ProgressBar.vue";
+import LoadingOverlay from "./LoadingOverlay.vue";
 
 import {
   defaultTotalGetter,
@@ -77,6 +80,9 @@ const rows = ref([]);
 const total = ref(undefined);
 const page = ref(1);
 
+const showLoadingOverlay = ref(false)
+const showProgressBar = ref(false)
+
 const selectedLimit = ref(undefined);
 
 const limit = computed(() =>
@@ -92,6 +98,8 @@ const updateLimit = (newLimit) => {
 
 const updatePage = (newPage) => {
   page.value = newPage;
+  isLoading.value = true
+
 };
 
 const updateTable = async () => {
@@ -110,6 +118,9 @@ const updateTable = async () => {
 
   rows.value = _rows;
   total.value = _total;
+
+  showProgressBar.value = false
+  showLoadingOverlay.value = false
 };
 
 onMounted(async () => {
@@ -121,7 +132,10 @@ watch(limit, async () => {
 });
 
 watch(page, async () => {
-  updateTable();
+  showLoadingOverlay.value = true
+  setTimeout(async () => {
+    await updateTable();
+  }, 2000);
 });
 </script>
 
@@ -133,14 +147,22 @@ watch(page, async () => {
         :selected="limit"
         @results-per-page-selection-changed="updateLimit"
       />
+
     </div>
+
+    <ProgressBarPlaceholder>
+      <ProgressBar v-show="showProgressBar"/>
+    </ProgressBarPlaceholder>
+
     <div class="paginated-table__wrapper">
       <DataTable
         :headings="props.headings"
         :rows="rows"
         :tableClass="props.tableClass"
       />
+      <LoadingOverlay v-show="showLoadingOverlay" />
     </div>
+
     <div class="paginated-table__footer">
       <ResultSummary :limit="limit" :offset="offset" :total="total" />
 
@@ -153,7 +175,7 @@ watch(page, async () => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .paginated-table {
   height: fit-content;
   width: 100%;
@@ -166,10 +188,12 @@ watch(page, async () => {
   justify-content: space-between;
 }
 .paginated-table__wrapper {
+  position: relative;
   overflow-y: scroll;
   overflow-x: scroll;
   padding-bottom: 1rem;
 }
+
 .paginated-table__header {
   background: white;
   width: 100%;
@@ -177,11 +201,7 @@ watch(page, async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* position: absolute;
-  top: 0;
-  left: 0; */
 }
-
 .paginated-table__footer {
   background: white;
   width: 100%;
@@ -189,8 +209,5 @@ watch(page, async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* position: absolute;
-  bottom: 0;
-  left: 0; */
 }
 </style>

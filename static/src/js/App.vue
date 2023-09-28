@@ -5,8 +5,12 @@ import ergastAPI from "./ergastAPI";
 
 const headings = [
   {
-    key: "name",
-    display: "Name",
+    key: "givenName",
+    display: "First Name",
+  },
+  {
+    key: "familyName",
+    display: "Surname"
   },
   {
     key: "dateOfBirth",
