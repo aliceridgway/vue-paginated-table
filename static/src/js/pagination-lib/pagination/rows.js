@@ -7,6 +7,7 @@ export default async function getRows(
   rowsGetter,
   rowsProcessor,
 ) {
+  console.log("ahoy")
   const url = `${baseURL}?limit=${limit}&offset=${offset}`;
   const data = await getSourceData(url);
   const totalRows = parseInt(totalGetter(data));

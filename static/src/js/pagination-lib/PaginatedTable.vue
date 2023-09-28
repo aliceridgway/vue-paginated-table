@@ -80,8 +80,8 @@ const rows = ref([]);
 const total = ref(undefined);
 const page = ref(1);
 
-const showLoadingOverlay = ref(false)
-const showProgressBar = ref(false)
+const showLoadingOverlay = ref(false);
+const showProgressBar = ref(false);
 
 const selectedLimit = ref(undefined);
 
@@ -98,8 +98,6 @@ const updateLimit = (newLimit) => {
 
 const updatePage = (newPage) => {
   page.value = newPage;
-  isLoading.value = true
-
 };
 
 const updateTable = async () => {
@@ -119,8 +117,8 @@ const updateTable = async () => {
   rows.value = _rows;
   total.value = _total;
 
-  showProgressBar.value = false
-  showLoadingOverlay.value = false
+  showProgressBar.value = false;
+  showLoadingOverlay.value = false;
 };
 
 onMounted(async () => {
@@ -132,10 +130,10 @@ watch(limit, async () => {
 });
 
 watch(page, async () => {
-  showLoadingOverlay.value = true
+  showLoadingOverlay.value = true;
   setTimeout(async () => {
     await updateTable();
-  }, 2000);
+  }, 500);
 });
 </script>
 
@@ -147,11 +145,10 @@ watch(page, async () => {
         :selected="limit"
         @results-per-page-selection-changed="updateLimit"
       />
-
     </div>
 
     <ProgressBarPlaceholder>
-      <ProgressBar v-show="showProgressBar"/>
+      <ProgressBar v-show="showProgressBar" />
     </ProgressBarPlaceholder>
 
     <div class="paginated-table__wrapper">

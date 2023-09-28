@@ -10,7 +10,7 @@ const headings = [
   },
   {
     key: "familyName",
-    display: "Surname"
+    display: "Surname",
   },
   {
     key: "dateOfBirth",

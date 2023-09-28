@@ -1,11 +1,11 @@
 <template>
-    <div class="progress-bar-placeholder">
-      <slot></slot>
-    </div>
+  <div class="progress-bar-placeholder">
+    <slot></slot>
+  </div>
 </template>
 
 <style>
-.progress-bar-placeholder{
+.progress-bar-placeholder {
   height: 16px;
 }
 </style>

@@ -1,11 +1,11 @@
 <template>
-    <div class="loading-overlay">
-        <div class="loading-overlay__spinner-wrapper">
-            <div class="loading-overlay__spinner spinner-border" role="status">
-            <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
+  <div class="loading-overlay">
+    <div class="loading-overlay__spinner-wrapper">
+      <div class="loading-overlay__spinner spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
     </div>
+  </div>
 </template>
 
 <style>
