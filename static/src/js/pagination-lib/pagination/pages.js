@@ -11,11 +11,11 @@ function getTotalPages(total, limit) {
 }
 
 function getNextOffset(requestedPage, limit) {
-  return (requestedPage - 1) * limit
+  return (requestedPage - 1) * limit;
 }
 
 export default {
   getCurrentPage,
   getTotalPages,
-  getNextOffset
+  getNextOffset,
 };

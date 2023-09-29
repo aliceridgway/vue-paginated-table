@@ -3,7 +3,9 @@
 This paginated table works by fetching JSON data over AJAX request to the supplied endpoint URL.
 
 ## Props
+
 ### Headings (required)
+
 You must supply an array of objects to the headings prop.
 
 Each heading object must have keys for `key` and `display`.
@@ -15,6 +17,7 @@ The "display" key determines what text will be rendered in the table header.
 Headings must be supplied in the order they will appear in the table from left to right.
 
 **Example**
+
 ```
 const headings = [
   {
@@ -41,14 +44,17 @@ const headings = [
 ```
 
 ### Source URL (required)
+
 You must supply the URL of the endpoint that will supply the table data.
 
 The endpoint must support RESTful query parameters and offset pagination.
+
 - limit
 - offset
 - filter strings
 
 ### Getters (optional)
+
 Getters are a set of default props designed to support a wide range of endpoints.
 
 Each getter is a function that accepts a dictionary and returns the desired value.
@@ -97,9 +103,11 @@ function rowsGetter(jsonResponse) {
 ```
 
 ### Rows Pre-processor (optional)
+
 There may be times where you want to process data from the endpoint before rendering it in the table.
 
 Examples:
+
 - Your endpoint returns firstName and lastName separately but you want to display the full name.
 - You want to format a date before rendering it in the table.
 
@@ -121,9 +129,11 @@ function rowsPreprocessor(rows) {
 By default, there is no pre-processing.
 
 ### Table Class (optional)
+
 You may supply one or more classes which will be applied to the table element. This has been added to allow Bootstrap classes to be applied to the table element.
 
 ### Results Per Page Options (optional)
+
 Users are allowed to change how many results are displayed per page.
 
 By default, the options are 10, 25 and 50.
@@ -131,11 +141,13 @@ By default, the options are 10, 25 and 50.
 The first value of the array will be used to request the number of results for the first page.
 
 ### Default Error Message (optional)
+
 You may supply a custom message to be displayed if there is an error fetching table data.
 
 ## Slots
 
 ### Rows
+
 There are many applications where you may need to render custom components inside cells of the table.
 
 A slot for rows is provided which has access to the rows returned by the endpoint.
@@ -145,7 +157,8 @@ Each row is an array of values that has been sorted in the order of the headings
 The slot is optional. By default, it will render the raw values.
 
 **Example**
-```    
+
+```
 <paginated-table
     tableClass="table table-striped table-hover table-responsive"
     :headings="headings"

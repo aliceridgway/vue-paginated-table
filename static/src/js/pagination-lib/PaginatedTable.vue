@@ -3,7 +3,7 @@
 import { ref, onMounted, computed, watch, nextTick } from "vue";
 
 // COMPONENTS
-import DefaultRow from "./sub-components/DefaultRow.vue"
+import DefaultRow from "./sub-components/DefaultRow.vue";
 import ErrorOverlay from "./sub-components/ErrorOverlay.vue";
 import Headings from "./sub-components/Headings.vue";
 import LoadingOverlay from "./sub-components/LoadingOverlay.vue";
@@ -101,7 +101,9 @@ const currentPage = computed(() =>
 const limit = computed(() =>
   requestedLimit.value ? requestedLimit.value : props.resultsPerPageOptions[0],
 );
-const showResultSummary = computed(() => (errorExists ? false : total > 0));
+const showResultSummary = computed(() =>
+  errorExists.value ? false : total.value > 0,
+);
 const showLoadingOverlay = ref(false);
 const totalPages = computed(() =>
   pages.getTotalPages(total.value, limit.value),
@@ -113,11 +115,11 @@ const updateLimit = (newLimit) => {
 };
 
 const updatePage = (newPage) => {
-  requestedPage.value = newPage
+  requestedPage.value = newPage;
 };
 
 const updateTable = async () => {
-  showLoadingOverlay.value = true
+  showLoadingOverlay.value = true;
 
   let _rows;
   let _total;
@@ -153,11 +155,10 @@ watch(limit, async () => {
 });
 
 watch(requestedPage, async () => {
-  showLoadingOverlay.value = true
+  showLoadingOverlay.value = true;
 
   setTimeout(updateTable, 1000);
 });
-
 </script>
 
 <template>
@@ -181,14 +182,13 @@ watch(requestedPage, async () => {
           <slot :rows="rows">
             <DefaultRow v-for="(row, index) in rows" :key="index" />
           </slot>
+          <LoadingOverlay v-show="showLoadingOverlay" />
+          <ErrorOverlay
+            v-show="errorExists"
+            :error-message="props.defaultErrorMessage"
+          />
         </tbody>
       </table>
-
-      <LoadingOverlay v-show="showLoadingOverlay" />
-      <ErrorOverlay
-        v-show="errorExists"
-        :error-message="props.defaultErrorMessage"
-      />
     </div>
 
     <div class="paginated-table__footer">
@@ -222,11 +222,16 @@ watch(requestedPage, async () => {
   flex-direction: column;
   justify-content: space-between;
 }
+
 .paginated-table__wrapper {
   position: relative;
   overflow-y: scroll;
   overflow-x: scroll;
   padding-bottom: 1rem;
+}
+
+.paginated-table__body {
+  position: relative;
 }
 
 .paginated-table__wrapper table {
