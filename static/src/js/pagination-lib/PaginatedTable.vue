@@ -1,6 +1,6 @@
 <script setup>
 // VUE
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed, watch, nextTick } from "vue";
 
 // COMPONENTS
 import DefaultRow from "./sub-components/DefaultRow.vue"
@@ -102,9 +102,7 @@ const limit = computed(() =>
   requestedLimit.value ? requestedLimit.value : props.resultsPerPageOptions[0],
 );
 const showResultSummary = computed(() => (errorExists ? false : total > 0));
-const showLoadingOverlay = computed(() =>
-  errorExists ? false : currentPage.value != requestedPage.value,
-);
+const showLoadingOverlay = ref(false);
 const totalPages = computed(() =>
   pages.getTotalPages(total.value, limit.value),
 );
@@ -115,29 +113,34 @@ const updateLimit = (newLimit) => {
 };
 
 const updatePage = (newPage) => {
-  requestedPage.value = newPage;
+  requestedPage.value = newPage
 };
 
 const updateTable = async () => {
+  showLoadingOverlay.value = true
+
   let _rows;
   let _total;
-  let _offset;
   let _errorExists;
+
+  const nextOffset = pages.getNextOffset(requestedPage.value, limit.value);
 
   [_total, _rows, _errorExists] = await getRows(
     props.sourceURL,
     props.headings,
     limit.value,
-    offset.value,
+    nextOffset,
     props.totalGetter,
     props.rowsGetter,
     props.rowsPreProcessor,
   );
 
+  offset.value = nextOffset;
   rows.value = _rows;
   total.value = _total;
   errorExists.value = _errorExists;
 
+  showLoadingOverlay.value = false;
   showProgressBar.value = false;
 };
 
@@ -150,10 +153,11 @@ watch(limit, async () => {
 });
 
 watch(requestedPage, async () => {
-  setTimeout(async () => {
-    await updateTable();
-  }, 500);
+  showLoadingOverlay.value = true
+
+  setTimeout(updateTable, 1000);
 });
+
 </script>
 
 <template>
