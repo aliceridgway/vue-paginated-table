@@ -3,16 +3,15 @@
 import { ref, onMounted, computed, watch } from "vue";
 
 // COMPONENTS
-import DefaultRow from "./DefaultRow.vue";
-import ErrorOverlay from "./ErrorOverlay.vue";
-import Headings from "./Headings.vue";
-import LoadingOverlay from "./LoadingOverlay.vue";
-import PageSelector from "./PageSelector.vue";
-import Placeholder from "./Placeholder.vue";
-import ProgressBar from "./ProgressBar.vue";
-import ProgressBarPlaceholder from "./ProgressBarPlaceholder.vue";
-import ResultSummary from "./ResultSummary.vue";
-import ResultsPerPageSelector from "./ResultsPerPageSelector.vue";
+import DefaultRow from "./sub-components/DefaultRow.vue"
+import ErrorOverlay from "./sub-components/ErrorOverlay.vue";
+import Headings from "./sub-components/Headings.vue";
+import LoadingOverlay from "./sub-components/LoadingOverlay.vue";
+import PageSelector from "./sub-components/PageSelector.vue";
+import Placeholder from "./sub-components/Placeholder.vue";
+import ProgressBar from "./sub-components/ProgressBar.vue";
+import ResultSummary from "./sub-components/ResultSummary.vue";
+import ResultsPerPageSelector from "./sub-components/ResultsPerPageSelector.vue";
 
 import {
   defaultTotalGetter,
@@ -167,9 +166,9 @@ watch(requestedPage, async () => {
       />
     </div>
 
-    <ProgressBarPlaceholder>
+    <Placeholder class="paginated-table__progress-bar-placeholder">
       <ProgressBar v-show="showProgressBar" />
-    </ProgressBarPlaceholder>
+    </Placeholder>
 
     <div class="paginated-table__wrapper">
       <table :class="props.tableClass">
@@ -242,6 +241,11 @@ watch(requestedPage, async () => {
 .paginated-table__body {
   min-height: 300px;
 }
+
+.paginated-table__progress-bar-placeholder {
+  height: 16px;
+}
+
 .paginated-table__footer {
   background: white;
   width: 100%;
