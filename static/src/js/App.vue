@@ -1,5 +1,6 @@
 <script setup>
 import Layout from "./Layout.vue";
+import CustomRow from "./CustomRow.vue";
 import PaginatedTable from "./pagination-lib/PaginatedTable.vue";
 import ergastAPI from "./ergastAPI";
 
@@ -25,24 +26,22 @@ const headings = [
     display: "URL",
   },
 ];
+
 </script>
 
 <template>
   <layout>
     <paginated-table
-      tableClass="table table-striped table-hover table-responsive"
+      tableClass="table table-responsive"
       :headings="headings"
       sourceURL="http://ergast.com/api/f1/drivers.json"
+      rowIdentificationKey="driverId"
       :rowsGetter="ergastAPI.rowsGetter"
       :totalGetter="ergastAPI.totalGetter"
       :rowsPreProcessor="ergastAPI.rowsPreprocessor"
     >
-      <template v-slot="{ rows }">
-        <tr v-for="(row, index) in rows" :key="index">
-          <td v-for="(cell, i) in row" :key="i">
-            {{ cell }}
-          </td>
-        </tr>
+      <template #rows="{ rows, handleRowSelectionEvent }">
+        <custom-row v-for="row in rows" :key="row.id" :row="row" @row-selection-toggled="handleRowSelectionEvent"/>
       </template>
     </paginated-table>
   </layout>

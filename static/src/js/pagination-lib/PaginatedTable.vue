@@ -21,6 +21,7 @@ import {
 
 import getRows from "./pagination/rows";
 import pages from "./pagination/pages";
+import rowSelection from "./pagination/rowSelection";
 
 // PROPS
 
@@ -39,6 +40,12 @@ const props = defineProps({
   sourceURL: {
     type: String,
     required: true,
+  },
+
+  // ROW IDENTIFICATION KEY: e.g. 'id' or 'api_uuid'. The key whose value will be unique to each row.
+  rowIdentificationKey: {
+    type: String,
+    required: true
   },
 
   // TOTAL GETTER (optional): a function to get the total number of results from the response
@@ -92,6 +99,7 @@ const rows = ref([]);
 const total = ref(0);
 const requestedPage = ref(1);
 const requestedLimit = ref(undefined);
+const selectedRows = ref([]);
 const showProgressBar = ref(false);
 
 // Computed
@@ -110,6 +118,14 @@ const totalPages = computed(() =>
 );
 
 // Methods
+const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
+  console.log("handleRowSelectionEvent")
+  console.log(rowIdentifier, isSelected)
+  const newSelectedRows = rowSelection.toggleRowSelection(rowIdentifier, isSelected, selectedRows.value)
+  console.log(newSelectedRows)
+  selectedRows.value = newSelectedRows
+}
+
 const updateLimit = (newLimit) => {
   requestedLimit.value = newLimit;
 };
@@ -135,6 +151,7 @@ const updateTable = async () => {
     props.totalGetter,
     props.rowsGetter,
     props.rowsPreProcessor,
+    props.rowIdentificationKey
   );
 
   offset.value = nextOffset;
@@ -179,9 +196,10 @@ watch(requestedPage, async () => {
       <table :class="props.tableClass">
         <Headings :headings="props.headings" />
         <tbody class="paginated-table__body">
-          <slot :rows="rows">
-            <DefaultRow v-for="(row, index) in rows" :key="index" />
+          <slot name="rows" :rows="rows" :handleRowSelectionEvent="handleRowSelectionEvent">
+            <DefaultRow v-for="row in rows" :row=row :key="row.id" @row-selection-toggled="handleRowSelectionEvent"/>
           </slot>
+
           <LoadingOverlay v-show="showLoadingOverlay" />
           <ErrorOverlay
             v-show="errorExists"

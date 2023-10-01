@@ -10,7 +10,7 @@ const props = defineProps({
 <template>
   <tr>
     <td v-for="(cell, i) in row" :key="i">
-      {{ cell }}
+      {{ cell.value }}
     </td>
   </tr>
 </template>
