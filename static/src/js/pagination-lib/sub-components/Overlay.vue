@@ -1,15 +1,17 @@
 <script setup>
-import { computed } from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
   cssClass: {
     type: String,
     required: false,
-    default: ""
-  }
-})
+    default: "",
+  },
+});
 
-const cssClass = computed(() => props.cssClass ? props.cssClass : "pgt-overlay");
+const cssClass = computed(() =>
+  props.cssClass ? props.cssClass : "pgt-overlay",
+);
 </script>
 
 <template>
@@ -27,5 +29,4 @@ const cssClass = computed(() => props.cssClass ? props.cssClass : "pgt-overlay")
   left: 0;
   background: rgba(255, 255, 255, 0.8);
 }
-
 </style>

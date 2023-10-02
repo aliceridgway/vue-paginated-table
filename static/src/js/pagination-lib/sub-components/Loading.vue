@@ -7,11 +7,9 @@
       <span class="visually-hidden">Loading...</span>
     </div>
   </div>
-
 </template>
 
 <style>
-
 .pgt-loading-overlay__spinner-wrapper {
   position: absolute;
   top: 50%;

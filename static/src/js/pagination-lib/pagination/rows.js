@@ -6,7 +6,7 @@ export default async function getRows(
   totalGetter,
   rowsGetter,
   rowsProcessor,
-  rowIdentificationKey
+  rowIdentificationKey,
 ) {
   console.log("ahoy");
   const url = `${baseURL}?limit=${limit}&offset=${offset}`;
@@ -20,8 +20,8 @@ export default async function getRows(
     totalRows = parseInt(totalGetter(data));
     const rowObjects = rowsGetter(data);
     const processedRows = rowsProcessor(rowObjects);
-    const formattedRows = formatRows(processedRows, rowIdentificationKey)
-    const filteredRows = filterRows(formattedRows, headings)
+    const formattedRows = formatRows(processedRows, rowIdentificationKey);
+    const filteredRows = filterRows(formattedRows, headings);
     sortedRows = sortRowData(filteredRows, headings);
   } catch (e) {
     error = true;
@@ -52,41 +52,41 @@ function sortRowData(rows, headings) {
 function sortSingleRow(row, keys, rowIdentificationKey) {
   // for a single row of data, return an Array of values ordered by their keys.
 
-  const rowKeys = row.map(cell => cell.key)
+  const rowKeys = row.map((cell) => cell.key);
 
   return keys.map((key) => {
-    if (rowKeys.includes(key)){
-      return row.filter(cell => cell.key == key)[0]
+    if (rowKeys.includes(key)) {
+      return row.filter((cell) => cell.key == key)[0];
     } else {
       return {
         id: rowIdentificationKey,
         key,
-        value: ""
-      }
+        value: "",
+      };
     }
   });
 }
 
 function formatRows(rows, rowIdentificationKey) {
-  return rows.map(row => formatSingleRow(row, rowIdentificationKey))
+  return rows.map((row) => formatSingleRow(row, rowIdentificationKey));
 }
 
 function formatSingleRow(rowObject, rowIdentificationKey) {
   const identifier = rowObject[rowIdentificationKey];
   const keys = Object.keys(rowObject);
 
-  return keys.map(key => ({
+  return keys.map((key) => ({
     id: identifier,
     key,
-    value: rowObject[key]
+    value: rowObject[key],
   }));
 }
 
 function filterRows(rows, headings) {
   const heading_keys = headings.map((headingObj) => headingObj.key);
-  return rows.map(row => filterSingleRow(row, heading_keys))
+  return rows.map((row) => filterSingleRow(row, heading_keys));
 }
 
 function filterSingleRow(row, headings) {
-  return row.filter(field => headings.includes(field.key))
+  return row.filter((field) => headings.includes(field.key));
 }

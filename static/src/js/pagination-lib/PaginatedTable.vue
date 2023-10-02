@@ -1,6 +1,6 @@
 <script setup>
 // VUE
-import { ref, onMounted, computed, watch, nextTick } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 
 // COMPONENTS
 import DefaultRow from "./sub-components/DefaultRow.vue";
@@ -46,7 +46,7 @@ const props = defineProps({
   // ROW IDENTIFICATION KEY: e.g. 'id' or 'api_uuid'. The key whose value will be unique to each row.
   rowIdentificationKey: {
     type: String,
-    required: true
+    required: true,
   },
 
   // TOTAL GETTER (optional): a function to get the total number of results from the response
@@ -120,8 +120,12 @@ const totalPages = computed(() =>
 
 // Methods
 const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
-  selectedRows.value = rowSelection.toggleRowSelection(rowIdentifier, isSelected, selectedRows.value)
-}
+  selectedRows.value = rowSelection.toggleRowSelection(
+    rowIdentifier,
+    isSelected,
+    selectedRows.value,
+  );
+};
 
 const updateLimit = (newLimit) => {
   requestedLimit.value = newLimit;
@@ -148,7 +152,7 @@ const updateTable = async () => {
     props.totalGetter,
     props.rowsGetter,
     props.rowsPreProcessor,
-    props.rowIdentificationKey
+    props.rowIdentificationKey,
   );
 
   offset.value = nextOffset;
@@ -193,8 +197,17 @@ watch(requestedPage, async () => {
       <table :class="props.tableClass">
         <Headings :headings="props.headings" />
         <tbody class="paginated-table__body">
-          <slot name="rows" :rows="rows" :handleRowSelectionEvent="handleRowSelectionEvent">
-            <DefaultRow v-for="row in rows" :row=row :key="row.id" @row-selection-toggled="handleRowSelectionEvent"/>
+          <slot
+            name="rows"
+            :rows="rows"
+            :handleRowSelectionEvent="handleRowSelectionEvent"
+          >
+            <DefaultRow
+              v-for="row in rows"
+              :row="row"
+              :key="row.id"
+              @row-selection-toggled="handleRowSelectionEvent"
+            />
           </slot>
           <Overlay v-if="showLoadingOverlay">
             <slot name="loading">

@@ -26,7 +26,6 @@ const headings = [
     display: "URL",
   },
 ];
-
 </script>
 
 <template>
@@ -41,7 +40,12 @@ const headings = [
       :rowsPreProcessor="ergastAPI.rowsPreprocessor"
     >
       <template #rows="{ rows, handleRowSelectionEvent }">
-        <custom-row v-for="row in rows" :key="row.id" :row="row" @row-selection-toggled="handleRowSelectionEvent"/>
+        <custom-row
+          v-for="row in rows"
+          :key="row.id"
+          :row="row"
+          @row-selection-toggled="handleRowSelectionEvent"
+        />
       </template>
     </paginated-table>
   </layout>
