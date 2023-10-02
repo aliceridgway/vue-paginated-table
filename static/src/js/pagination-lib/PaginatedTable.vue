@@ -4,9 +4,10 @@ import { ref, onMounted, computed, watch, nextTick } from "vue";
 
 // COMPONENTS
 import DefaultRow from "./sub-components/DefaultRow.vue";
-import ErrorOverlay from "./sub-components/ErrorOverlay.vue";
+import Error from "./sub-components/Error.vue";
 import Headings from "./sub-components/Headings.vue";
-import LoadingOverlay from "./sub-components/LoadingOverlay.vue";
+import Loading from "./sub-components/Loading.vue";
+import Overlay from "./sub-components/Overlay.vue";
 import PageSelector from "./sub-components/PageSelector.vue";
 import Placeholder from "./sub-components/Placeholder.vue";
 import ProgressBar from "./sub-components/ProgressBar.vue";
@@ -100,6 +101,7 @@ const total = ref(0);
 const requestedPage = ref(1);
 const requestedLimit = ref(undefined);
 const selectedRows = ref([]);
+const showLoadingOverlay = ref(false);
 const showProgressBar = ref(false);
 
 // Computed
@@ -112,18 +114,13 @@ const limit = computed(() =>
 const showResultSummary = computed(() =>
   errorExists.value ? false : total.value > 0,
 );
-const showLoadingOverlay = ref(false);
 const totalPages = computed(() =>
   pages.getTotalPages(total.value, limit.value),
 );
 
 // Methods
 const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
-  console.log("handleRowSelectionEvent")
-  console.log(rowIdentifier, isSelected)
-  const newSelectedRows = rowSelection.toggleRowSelection(rowIdentifier, isSelected, selectedRows.value)
-  console.log(newSelectedRows)
-  selectedRows.value = newSelectedRows
+  selectedRows.value = rowSelection.toggleRowSelection(rowIdentifier, isSelected, selectedRows.value)
 }
 
 const updateLimit = (newLimit) => {
@@ -199,12 +196,16 @@ watch(requestedPage, async () => {
           <slot name="rows" :rows="rows" :handleRowSelectionEvent="handleRowSelectionEvent">
             <DefaultRow v-for="row in rows" :row=row :key="row.id" @row-selection-toggled="handleRowSelectionEvent"/>
           </slot>
-
-          <LoadingOverlay v-show="showLoadingOverlay" />
-          <ErrorOverlay
-            v-show="errorExists"
-            :error-message="props.defaultErrorMessage"
-          />
+          <Overlay v-if="showLoadingOverlay">
+            <slot name="loading">
+              <Loading />
+            </slot>
+          </Overlay>
+          <Overlay v-show="errorExists">
+            <slot name="error" :errorMessage="props.defaultErrorMessage">
+              <Error :error-message="props.defaultErrorMessage" />
+            </slot>
+          </Overlay>
         </tbody>
       </table>
     </div>
