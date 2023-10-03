@@ -11,12 +11,14 @@ const props = defineProps({
   selectedRows: {
     type: Array,
     required: false,
-    default: []
-  }
+    default: [],
+  },
 });
 
 const rowIdentifier = computed(() => props.row[0].id);
-const rowIsSelected = computed(() => props.selectedRows.includes(rowIdentifier.value))
+const rowIsSelected = computed(() =>
+  props.selectedRows.includes(rowIdentifier.value),
+);
 
 const rowCSSClass = computed(() =>
   rowIsSelected.value

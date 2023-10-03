@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref } from "vue";
 
 const emit = defineEmits(["allRowsSelectorUpdated"]);
 
@@ -10,18 +10,17 @@ const props = defineProps({
   },
   usersCanSelectRows: {
     type: Boolean,
-    required: true
+    required: true,
   },
   allRowsSelected: {
     type: Boolean,
-    required: true
-  }
+    required: true,
+  },
 });
 
 const handleAllRowsSelectorChange = (event) => {
   emit("allRowsSelectorUpdated", event.target.checked);
-}
-
+};
 </script>
 
 <template>
