@@ -8,18 +8,24 @@ const props = defineProps({
     type: Array,
     required: true,
   },
+  selectedRows: {
+    type: Array,
+    required: false,
+    default: []
+  }
 });
 
-const isSelected = ref(false);
 const rowIdentifier = computed(() => props.row[0].id);
+const rowIsSelected = computed(() => props.selectedRows.includes(rowIdentifier.value))
+
 const rowCSSClass = computed(() =>
-  isSelected.value
+  rowIsSelected.value
     ? "paginated-table__row table-active paginated-table__row--selected"
     : "paginated-table__row",
 );
 
 const handleCheckboxToggle = (event) => {
-  emit("row-selection-toggled", rowIdentifier.value, isSelected.value);
+  emit("row-selection-toggled", rowIdentifier.value, rowIsSelected.value);
 };
 
 // onMounted(() => console.log("Custom row mounted."))
@@ -32,7 +38,7 @@ const handleCheckboxToggle = (event) => {
         class="form-check-input"
         type="checkbox"
         :value="rowIdentifier"
-        v-model="isSelected"
+        :checked="rowIsSelected"
         :id="`row-${rowIdentifier}`"
         @change="handleCheckboxToggle"
       />

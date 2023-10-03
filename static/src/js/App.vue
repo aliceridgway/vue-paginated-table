@@ -35,15 +35,17 @@ const headings = [
       :headings="headings"
       sourceURL="http://ergast.com/api/f1/drivers.json"
       rowIdentificationKey="driverId"
+      :usersCanSelectRows=true
       :rowsGetter="ergastAPI.rowsGetter"
       :totalGetter="ergastAPI.totalGetter"
       :rowsPreProcessor="ergastAPI.rowsPreprocessor"
     >
-      <template #rows="{ rows, handleRowSelectionEvent }">
+      <template #rows="{ rows, selectedRows, handleRowSelectionEvent }">
         <custom-row
           v-for="row in rows"
           :key="row.id"
           :row="row"
+          :selectedRows="selectedRows"
           @row-selection-toggled="handleRowSelectionEvent"
         />
       </template>

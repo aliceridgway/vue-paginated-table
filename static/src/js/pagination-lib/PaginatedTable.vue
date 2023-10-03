@@ -49,6 +49,14 @@ const props = defineProps({
     required: true,
   },
 
+  // USERS CAN SELECT ROWS (optional): defines if users can select rows for bulk actions.
+  // Component will emit the selectedRowsUpdated event when the user's selection changes.
+  usersCanSelectRows: {
+    type: Boolean,
+    required: false,
+    default: false
+  },
+
   // TOTAL GETTER (optional): a function to get the total number of results from the response
   totalGetter: {
     type: Function,
@@ -105,6 +113,7 @@ const showLoadingOverlay = ref(false);
 const showProgressBar = ref(false);
 
 // Computed
+const allRowsSelected = computed(() => rows.value.length > 0 && rows.value.length === selectedRows.value.length)
 const currentPage = computed(() =>
   pages.getCurrentPage(offset.value, limit.value),
 );
@@ -126,6 +135,11 @@ const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
     selectedRows.value,
   );
 };
+
+const handleAllRowsSelectorUpdate = (allRowsSelected) => {
+  // Selects or deselects all rows.
+  selectedRows.value = allRowsSelected ? rows.value.map(row => row[0].id) : []
+}
 
 const updateLimit = (newLimit) => {
   requestedLimit.value = newLimit;
@@ -195,11 +209,12 @@ watch(requestedPage, async () => {
 
     <div class="paginated-table__wrapper">
       <table :class="props.tableClass">
-        <Headings :headings="props.headings" />
+        <Headings :headings="props.headings" :usersCanSelectRows="usersCanSelectRows" :allRowsSelected="allRowsSelected" @all-rows-selector-updated="handleAllRowsSelectorUpdate" />
         <tbody class="paginated-table__body">
           <slot
             name="rows"
             :rows="rows"
+            :selectedRows="selectedRows"
             :handleRowSelectionEvent="handleRowSelectionEvent"
           >
             <DefaultRow
