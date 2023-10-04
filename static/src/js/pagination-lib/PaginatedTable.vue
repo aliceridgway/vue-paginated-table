@@ -20,7 +20,7 @@ import {
   defaultRowsPreprocessor,
 } from "./pagination/defaults";
 
-import getRows from "./pagination/rows";
+import fetchRows from "./pagination/rows";
 import pages from "./pagination/pages";
 import rowSelection from "./pagination/rowSelection";
 
@@ -142,7 +142,7 @@ const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
 const handleAllRowsSelectorUpdate = (allRowsSelected) => {
   // Selects or deselects all rows.
   selectedRows.value = allRowsSelected
-    ? rows.value.map((row) => row[0].id)
+    ? rows.value.map((row) => row.id)
     : [];
 };
 
@@ -164,7 +164,7 @@ const updateTable = async () => {
 
   const nextOffset = pages.getNextOffset(requestedPage.value, limit.value);
 
-  [_total, _rows, _errorExists] = await getRows(
+  [_total, _rows, _errorExists] = await fetchRows(
     props.sourceURL,
     props.headings,
     limit.value,

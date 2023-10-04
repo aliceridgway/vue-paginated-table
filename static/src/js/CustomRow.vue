@@ -15,7 +15,7 @@ const props = defineProps({
   },
 });
 
-const rowIdentifier = computed(() => props.row[0].id);
+const rowIdentifier = computed(() => props.row.id);
 const rowIsSelected = computed(() =>
   props.selectedRows.includes(rowIdentifier.value),
 );
@@ -44,7 +44,7 @@ const handleCheckboxToggle = (event) => {
         @change="handleCheckboxToggle"
       />
     </td>
-    <td v-for="(cell, i) in row" :key="i">
+    <td v-for="(cell, i) in row.values" :key="i">
       <a v-if="cell.key == 'url'" class="button" :href="cell.value"
         >View on Wikipedia</a
       >

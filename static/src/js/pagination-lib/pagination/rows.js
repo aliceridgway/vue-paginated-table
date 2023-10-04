@@ -1,4 +1,4 @@
-export default async function getRows(
+export default async function fetchRows(
   baseURL,
   headings,
   limit,
@@ -49,22 +49,24 @@ function sortRowData(rows, headings) {
   return sortedRows;
 }
 
-function sortSingleRow(row, keys, rowIdentificationKey) {
+function sortSingleRow(row, keys) {
   // for a single row of data, return an Array of values ordered by their keys.
 
-  const rowKeys = row.map((cell) => cell.key);
+  const rowKeys = row.values.map((cell) => cell.key);
 
-  return keys.map((key) => {
+  const sortedValues = keys.map((key) => {
     if (rowKeys.includes(key)) {
-      return row.filter((cell) => cell.key == key)[0];
+      return row.values.filter(cell => cell.key == key)[0];
     } else {
       return {
-        id: rowIdentificationKey,
         key,
         value: "",
       };
     }
   });
+
+  row.values = sortedValues
+  return row
 }
 
 function formatRows(rows, rowIdentificationKey) {
@@ -72,14 +74,17 @@ function formatRows(rows, rowIdentificationKey) {
 }
 
 function formatSingleRow(rowObject, rowIdentificationKey) {
-  const identifier = rowObject[rowIdentificationKey];
   const keys = Object.keys(rowObject);
 
-  return keys.map((key) => ({
-    id: identifier,
+  const values = keys.map((key) => ({
     key,
     value: rowObject[key],
   }));
+
+  return {
+    id: rowObject[rowIdentificationKey],
+    values: values
+  }
 }
 
 function filterRows(rows, headings) {
@@ -88,5 +93,8 @@ function filterRows(rows, headings) {
 }
 
 function filterSingleRow(row, headings) {
-  return row.filter((field) => headings.includes(field.key));
+  const rowCopy = {...row};
+  const filteredValues = rowCopy.values.filter((field) => headings.includes(field.key));
+  rowCopy.values = filteredValues
+  return rowCopy
 }
