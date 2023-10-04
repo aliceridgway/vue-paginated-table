@@ -152,6 +152,7 @@ const updateLimit = (newLimit) => {
 
 const updatePage = (newPage) => {
   requestedPage.value = newPage;
+  selectedRows.value = [];
 };
 
 const updateTable = async () => {
@@ -214,12 +215,14 @@ watch(requestedPage, async () => {
 
     <div class="paginated-table__wrapper">
       <table :class="props.tableClass">
+
         <Headings
           :headings="props.headings"
           :usersCanSelectRows="usersCanSelectRows"
           :allRowsSelected="allRowsSelected"
           @all-rows-selector-updated="handleAllRowsSelectorUpdate"
         />
+
         <tbody class="paginated-table__body">
           <slot
             name="rows"

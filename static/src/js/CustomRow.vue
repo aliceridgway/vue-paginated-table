@@ -27,10 +27,9 @@ const rowCSSClass = computed(() =>
 );
 
 const handleCheckboxToggle = (event) => {
-  emit("row-selection-toggled", rowIdentifier.value, rowIsSelected.value);
+  emit("row-selection-toggled", rowIdentifier.value, event.target.checked);
 };
 
-// onMounted(() => console.log("Custom row mounted."))
 </script>
 
 <template>
