@@ -234,6 +234,7 @@ watch(requestedPage, async () => {
               v-for="row in rows"
               :row="row"
               :key="row.id"
+              :selectedRows="selectedRows"
               @row-selection-toggled="handleRowSelectionEvent"
             />
           </slot>

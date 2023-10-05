@@ -40,7 +40,7 @@ const headings = [
       :totalGetter="ergastAPI.totalGetter"
       :rowsPreProcessor="ergastAPI.rowsPreprocessor"
     >
-      <template #rows="{ rows, selectedRows, handleRowSelectionEvent }">
+      <!-- <template #rows="{ rows, selectedRows, handleRowSelectionEvent }">
         <custom-row
           v-for="row in rows"
           :key="row.id"
@@ -48,7 +48,7 @@ const headings = [
           :selectedRows="selectedRows"
           @row-selection-toggled="handleRowSelectionEvent"
         />
-      </template>
+      </template> -->
     </paginated-table>
   </layout>
 </template>

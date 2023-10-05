@@ -5,7 +5,7 @@ const emit = defineEmits(["row-selection-toggled"]);
 
 const props = defineProps({
   row: {
-    type: Array,
+    type: Object,
     required: true,
   },
   selectedRows: {
@@ -29,7 +29,6 @@ const rowCSSClass = computed(() =>
 const handleCheckboxToggle = (event) => {
   emit("row-selection-toggled", rowIdentifier.value, event.target.checked);
 };
-
 </script>
 
 <template>

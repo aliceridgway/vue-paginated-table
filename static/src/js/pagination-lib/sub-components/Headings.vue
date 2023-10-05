@@ -1,5 +1,4 @@
 <script setup>
-
 const emit = defineEmits(["allRowsSelectorUpdated"]);
 
 const props = defineProps({

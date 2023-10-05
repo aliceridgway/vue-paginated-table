@@ -56,7 +56,7 @@ function sortSingleRow(row, keys) {
 
   const sortedValues = keys.map((key) => {
     if (rowKeys.includes(key)) {
-      return row.values.filter(cell => cell.key == key)[0];
+      return row.values.filter((cell) => cell.key == key)[0];
     } else {
       return {
         key,
@@ -65,8 +65,8 @@ function sortSingleRow(row, keys) {
     }
   });
 
-  row.values = sortedValues
-  return row
+  row.values = sortedValues;
+  return row;
 }
 
 function formatRows(rows, rowIdentificationKey) {
@@ -83,8 +83,8 @@ function formatSingleRow(rowObject, rowIdentificationKey) {
 
   return {
     id: rowObject[rowIdentificationKey],
-    values: values
-  }
+    values: values,
+  };
 }
 
 function filterRows(rows, headings) {
@@ -93,8 +93,10 @@ function filterRows(rows, headings) {
 }
 
 function filterSingleRow(row, headings) {
-  const rowCopy = {...row};
-  const filteredValues = rowCopy.values.filter((field) => headings.includes(field.key));
-  rowCopy.values = filteredValues
-  return rowCopy
+  const rowCopy = { ...row };
+  const filteredValues = rowCopy.values.filter((field) =>
+    headings.includes(field.key),
+  );
+  rowCopy.values = filteredValues;
+  return rowCopy;
 }
