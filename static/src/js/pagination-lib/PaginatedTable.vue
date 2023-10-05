@@ -2,26 +2,28 @@
 // VUE
 import { ref, onMounted, computed, watch } from "vue";
 
-// COMPONENTS
-import DefaultRow from "./sub-components/DefaultRow.vue";
-import Error from "./sub-components/Error.vue";
-import Headings from "./sub-components/Headings.vue";
-import Loading from "./sub-components/Loading.vue";
+// DEFAULT COMPONENTS
+import DefaultRow from "./defaults/DefaultRow.vue";
+import DefaultError from "./defaults/DefaultError.vue";
+import DefaultHeadings from "./defaults/DefaultHeadings.vue";
+import DefaultResultSummary from "./defaults/DefaultResultSummary.vue";
+import DefaultResultsPerPageSelector from "./defaults/DefaultResultsPerPageSelector.vue";
+import DefaultProgressBar from "./defaults/DefaultProgressBar.vue";
+import DefaultPageSelector from "./defaults/DefaultPageSelector.vue";
+import DefaultLoading from "./defaults/DefaultLoading.vue";
+
+// UTILITY COMPONENTS
 import Overlay from "./sub-components/Overlay.vue";
-import PageSelector from "./sub-components/PageSelector.vue";
 import Placeholder from "./sub-components/Placeholder.vue";
-import ProgressBar from "./sub-components/ProgressBar.vue";
-import ResultSummary from "./sub-components/ResultSummary.vue";
-import ResultsPerPageSelector from "./sub-components/ResultsPerPageSelector.vue";
 
 import fetchRows from "./pagination/rows";
 import pages from "./pagination/pages";
 import rowSelection from "./pagination/rowSelection";
 
 // PROPS
-import { paginatedTableProps } from './paginated-table/props';
+import { paginatedTableProps } from "./props";
 
-const props = defineProps(paginatedTableProps)
+const props = defineProps(paginatedTableProps);
 
 // Initial States
 const errorExists = ref(false);
@@ -63,9 +65,7 @@ const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
 
 const handleAllRowsSelectorUpdate = (allRowsSelected) => {
   // Selects or deselects all rows.
-  selectedRows.value = allRowsSelected
-    ? rows.value.map((row) => row.id)
-    : [];
+  selectedRows.value = allRowsSelected ? rows.value.map((row) => row.id) : [];
 };
 
 const updateLimit = (newLimit) => {
@@ -124,26 +124,44 @@ watch(requestedPage, async () => {
 <template>
   <div class="paginated-table shadow p-3 mb-5 bg-body rounded">
     <div class="paginated-table__header">
-      <ResultsPerPageSelector
+      <slot
+        name="results-per-page"
         :resultsPerPageOptions="props.resultsPerPageOptions"
-        :selected="limit"
-        @results-per-page-selection-changed="updateLimit"
-      />
+        :limit="limit"
+        :updateLimit="updateLimit"
+      >
+        <DefaultResultsPerPageSelector
+          :resultsPerPageOptions="props.resultsPerPageOptions"
+          :selected="limit"
+          @results-per-page-selection-changed="updateLimit"
+        />
+      </slot>
     </div>
 
     <Placeholder class="paginated-table__progress-bar-placeholder">
-      <ProgressBar v-show="showProgressBar" />
+      <div v-show="showProgressBar">
+        <slot name="progress-bar">
+          <DefaultProgressBar />
+        </slot>
+      </div>
     </Placeholder>
 
     <div class="paginated-table__wrapper">
       <table :class="props.tableClass">
-
-        <Headings
+        <slot
+          name="headings"
           :headings="props.headings"
-          :usersCanSelectRows="usersCanSelectRows"
+          :usersCanSelectRows="props.usersCanSelectRows"
           :allRowsSelected="allRowsSelected"
-          @all-rows-selector-updated="handleAllRowsSelectorUpdate"
-        />
+          :handleAllRowsSelectorUpdate="handleAllRowsSelectorUpdate"
+        >
+          <DefaultHeadings
+            :headings="props.headings"
+            :usersCanSelectRows="usersCanSelectRows"
+            :allRowsSelected="allRowsSelected"
+            @all-rows-selector-updated="handleAllRowsSelectorUpdate"
+          />
+        </slot>
 
         <tbody class="paginated-table__body">
           <slot
@@ -162,12 +180,12 @@ watch(requestedPage, async () => {
           </slot>
           <Overlay v-if="showLoadingOverlay">
             <slot name="loading">
-              <Loading />
+              <DefaultLoading />
             </slot>
           </Overlay>
           <Overlay v-show="errorExists">
             <slot name="error" :errorMessage="props.defaultErrorMessage">
-              <Error :error-message="props.defaultErrorMessage" />
+              <DefaultError :error-message="props.defaultErrorMessage" />
             </slot>
           </Overlay>
         </tbody>
@@ -176,19 +194,34 @@ watch(requestedPage, async () => {
 
     <div class="paginated-table__footer">
       <Placeholder>
-        <ResultSummary
-          v-if="showResultSummary"
-          :limit="limit"
-          :offset="offset"
-          :total="total"
-        />
+        <div v-if="showResultSummary">
+          <slot
+            name="result-summary"
+            :limit="limit"
+            :offset="offset"
+            :total="total"
+          >
+            <DefaultResultSummary
+              :limit="limit"
+              :offset="offset"
+              :total="total"
+            />
+          </slot>
+        </div>
       </Placeholder>
 
-      <PageSelector
+      <slot
+        name="page-selector"
         :currentPage="currentPage"
         :totalPages="totalPages"
-        @page-number-changed="updatePage"
-      />
+        :updatePage="updatePage"
+      >
+        <DefaultPageSelector
+          :currentPage="currentPage"
+          :totalPages="totalPages"
+          @page-number-changed="updatePage"
+        />
+      </slot>
     </div>
   </div>
 </template>
