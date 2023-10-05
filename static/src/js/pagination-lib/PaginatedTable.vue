@@ -16,6 +16,7 @@ import DefaultLoading from "./defaults/DefaultLoading.vue";
 import Overlay from "./sub-components/Overlay.vue";
 import Placeholder from "./sub-components/Placeholder.vue";
 
+// HELPERS
 import fetchRows from "./pagination/rows";
 import pages from "./pagination/pages";
 import rowSelection from "./pagination/rowSelection";
@@ -25,36 +26,65 @@ import { paginatedTableProps } from "./props";
 
 const props = defineProps(paginatedTableProps);
 
-// Initial States
+// DISPLAY
 const errorExists = ref(false);
-const offset = ref(0);
-const rows = ref([]);
-const total = ref(0);
-const requestedPage = ref(1);
-const requestedLimit = ref(undefined);
-const selectedRows = ref([]);
 const showLoadingOverlay = ref(false);
 const showProgressBar = ref(false);
 
-// Computed
-const allRowsSelected = computed(
-  () =>
-    rows.value.length > 0 && rows.value.length === selectedRows.value.length,
-);
-const currentPage = computed(() =>
-  pages.getCurrentPage(offset.value, limit.value),
-);
-const limit = computed(() =>
-  requestedLimit.value ? requestedLimit.value : props.resultsPerPageOptions[0],
-);
 const showResultSummary = computed(() =>
   errorExists.value ? false : total.value > 0,
 );
+
+// ROWS
+const rows = ref([]);
+const offset = ref(0);
+const total = ref(0);
+
+// RESULTS PER PAGE
+const requestedLimit = ref(undefined);
+
+const limit = computed(() =>
+  requestedLimit.value ? requestedLimit.value : props.resultsPerPageOptions[0],
+);
+const updateLimit = (newLimit) => {
+  requestedLimit.value = newLimit;
+};
+
+watch(limit, async () => {
+  updateTable();
+});
+
+
+// PAGES
+const requestedPage = ref(1);
+
+const currentPage = computed(() =>
+  pages.getCurrentPage(offset.value, limit.value),
+);
+
 const totalPages = computed(() =>
   pages.getTotalPages(total.value, limit.value),
 );
 
-// Methods
+const updatePage = (newPage) => {
+  requestedPage.value = newPage;
+  selectedRows.value = [];
+};
+
+watch(requestedPage, async () => {
+  showLoadingOverlay.value = true;
+
+  setTimeout(updateTable, 1000);
+});
+
+// ROW SELECTION
+const selectedRows = ref([]);
+
+const allRowsSelected = computed(
+  () =>
+    rows.value.length > 0 && rows.value.length === selectedRows.value.length,
+);
+
 const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
   selectedRows.value = rowSelection.toggleRowSelection(
     rowIdentifier,
@@ -64,18 +94,13 @@ const handleRowSelectionEvent = (rowIdentifier, isSelected) => {
 };
 
 const handleAllRowsSelectorUpdate = (allRowsSelected) => {
-  // Selects or deselects all rows.
   selectedRows.value = allRowsSelected ? rows.value.map((row) => row.id) : [];
 };
 
-const updateLimit = (newLimit) => {
-  requestedLimit.value = newLimit;
-};
-
-const updatePage = (newPage) => {
-  requestedPage.value = newPage;
-  selectedRows.value = [];
-};
+// TABLE UPDATES
+onMounted(async () => {
+  updateTable();
+});
 
 const updateTable = async () => {
   showLoadingOverlay.value = true;
@@ -106,19 +131,6 @@ const updateTable = async () => {
   showProgressBar.value = false;
 };
 
-onMounted(async () => {
-  updateTable();
-});
-
-watch(limit, async () => {
-  updateTable();
-});
-
-watch(requestedPage, async () => {
-  showLoadingOverlay.value = true;
-
-  setTimeout(updateTable, 1000);
-});
 </script>
 
 <template>

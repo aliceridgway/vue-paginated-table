@@ -8,7 +8,6 @@ export default async function fetchRows(
   rowsProcessor,
   rowIdentificationKey,
 ) {
-  console.log("ahoy");
   const url = `${baseURL}?limit=${limit}&offset=${offset}`;
 
   let totalRows = 0;
