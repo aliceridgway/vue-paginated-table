@@ -1,5 +1,3 @@
-import { defineProps } from "vue";
-
 import {
   defaultTotalGetter,
   defaultRowsGetter,
@@ -27,6 +25,13 @@ export const paginatedTableProps = {
   rowIdentificationKey: {
     type: String,
     required: true,
+  },
+
+  // SORTABLE COLUMNS (optional): a list of heading keys that the user can select to sort the table.
+  sortableColumns: {
+    type: Array,
+    required: false,
+    default: []
   },
 
   // USERS CAN SELECT ROWS (optional): defines if users can select rows for bulk actions.

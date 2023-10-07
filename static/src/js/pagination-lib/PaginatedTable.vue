@@ -97,6 +97,17 @@ const handleAllRowsSelectorUpdate = (allRowsSelected) => {
   selectedRows.value = allRowsSelected ? rows.value.map((row) => row.id) : [];
 };
 
+// SORTING
+
+const sortedColumn = ref(null);
+const sortAscending = ref(true);
+
+const updateSortedColumn = (columnKey, ascending) => {
+  console.log(columnKey, ascending)
+  sortedColumn.value = columnKey
+  sortAscending.value = ascending
+}
+
 // TABLE UPDATES
 onMounted(async () => {
   updateTable();
@@ -163,15 +174,20 @@ const updateTable = async () => {
         <slot
           name="headings"
           :headings="props.headings"
+          :sortableColumns="props.sortableColumns"
           :usersCanSelectRows="props.usersCanSelectRows"
           :allRowsSelected="allRowsSelected"
           :handleAllRowsSelectorUpdate="handleAllRowsSelectorUpdate"
         >
           <DefaultHeadings
             :headings="props.headings"
+            :sortableColumns="props.sortableColumns"
             :usersCanSelectRows="usersCanSelectRows"
             :allRowsSelected="allRowsSelected"
+            :sortedColumn="sortedColumn"
+            :sortAscending="sortAscending"
             @all-rows-selector-updated="handleAllRowsSelectorUpdate"
+            @sort-toggled="updateSortedColumn"
           />
         </slot>
 

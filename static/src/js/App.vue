@@ -26,6 +26,8 @@ const headings = [
     display: "URL",
   },
 ];
+
+const sortableColumns = ["givenName", "familyName", "dateOfBirth", "nationality"]
 </script>
 
 <template>
@@ -33,6 +35,7 @@ const headings = [
     <paginated-table
       tableClass="table table-responsive"
       :headings="headings"
+      :sortableColumns="sortableColumns"
       sourceURL="http://ergast.com/api/f1/drivers.json"
       rowIdentificationKey="driverId"
       :usersCanSelectRows="true"
