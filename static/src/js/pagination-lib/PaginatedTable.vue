@@ -54,7 +54,6 @@ watch(limit, async () => {
   updateTable();
 });
 
-
 // PAGES
 const requestedPage = ref(1);
 
@@ -97,16 +96,36 @@ const handleAllRowsSelectorUpdate = (allRowsSelected) => {
   selectedRows.value = allRowsSelected ? rows.value.map((row) => row.id) : [];
 };
 
+// FILTERING
+
+const params = computed(() =>
+  props.searchParams ? props.searchParams : new URLSearchParams(),
+);
+const visibleColumns = computed(() =>
+  props.headings.filter((heading) => !props.hiddenColumns.includes(heading)),
+);
+
 // SORTING
 
 const sortedColumn = ref(null);
 const sortAscending = ref(true);
 
+const sortParamsString = computed(() => {
+  const direction = sortAscending.value ? "asc" : "desc";
+  return `sort=${sortedColumn.value}.${direction}`;
+});
+
 const updateSortedColumn = (columnKey, ascending) => {
-  console.log(columnKey, ascending)
-  sortedColumn.value = columnKey
-  sortAscending.value = ascending
-}
+  console.log(columnKey, ascending);
+  sortedColumn.value = columnKey;
+  sortAscending.value = ascending;
+};
+
+watch(sortParamsString, async () => {
+  showLoadingOverlay.value = true;
+
+  setTimeout(updateTable, 1000);
+});
 
 // TABLE UPDATES
 onMounted(async () => {
@@ -124,7 +143,7 @@ const updateTable = async () => {
 
   [_total, _rows, _errorExists] = await fetchRows(
     props.sourceURL,
-    props.headings,
+    visibleColumns.value,
     limit.value,
     nextOffset,
     props.totalGetter,
@@ -141,7 +160,6 @@ const updateTable = async () => {
   showLoadingOverlay.value = false;
   showProgressBar.value = false;
 };
-
 </script>
 
 <template>
@@ -173,16 +191,19 @@ const updateTable = async () => {
       <table :class="props.tableClass">
         <slot
           name="headings"
-          :headings="props.headings"
+          :visibleColumns="visibleColumns"
           :sortableColumns="props.sortableColumns"
+          :hiddenColumns="props.hiddenColumns"
           :usersCanSelectRows="props.usersCanSelectRows"
           :allRowsSelected="allRowsSelected"
+          :freezeFirstColumn="props.freezeFirstColumn"
           :handleAllRowsSelectorUpdate="handleAllRowsSelectorUpdate"
         >
           <DefaultHeadings
-            :headings="props.headings"
+            :headings="visibleColumns"
             :sortableColumns="props.sortableColumns"
             :usersCanSelectRows="usersCanSelectRows"
+            :freezeFirstColumn="props.freezeFirstColumn"
             :allRowsSelected="allRowsSelected"
             :sortedColumn="sortedColumn"
             :sortAscending="sortAscending"
@@ -197,12 +218,15 @@ const updateTable = async () => {
             :rows="rows"
             :selectedRows="selectedRows"
             :handleRowSelectionEvent="handleRowSelectionEvent"
+            :freezeFirstColumn="props.freezeFirstColumn"
           >
             <DefaultRow
               v-for="row in rows"
               :row="row"
               :key="row.id"
               :selectedRows="selectedRows"
+              :freezeFirstColumn="props.freezeFirstColumn"
+              :usersCanSelectRows="props.usersCanSelectRows"
               @row-selection-toggled="handleRowSelectionEvent"
             />
           </slot>
@@ -257,8 +281,7 @@ const updateTable = async () => {
 <style>
 .paginated-table {
   height: fit-content;
-  width: 100%;
-  background: white;
+  min-width: 100%;
   padding: 1.5rem;
   border-radius: 10px;
   position: relative;
@@ -280,6 +303,9 @@ const updateTable = async () => {
 
 .paginated-table__wrapper table {
   min-height: 150px;
+  table-layout: fixed;
+  overflow: scroll;
+  width: 100%;
 }
 
 .paginated-table__header {
@@ -295,6 +321,10 @@ const updateTable = async () => {
   min-height: 300px;
 }
 
+.paginated-table__row {
+  position: relative;
+}
+
 .paginated-table__progress-bar-placeholder {
   height: 16px;
 }
@@ -306,5 +336,18 @@ const updateTable = async () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+
+.fixed-selection-column {
+  left: 0;
+  position: sticky;
+  z-index: 99;
+  width: 50px;
+}
+
+.fixed-column {
+  position: sticky;
+  left: 50px;
+  z-index: 99;
 }
 </style>

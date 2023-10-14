@@ -27,7 +27,12 @@ const headings = [
   },
 ];
 
-const sortableColumns = ["givenName", "familyName", "dateOfBirth", "nationality"]
+const sortableColumns = [
+  "givenName",
+  "familyName",
+  "dateOfBirth",
+  "nationality",
+];
 </script>
 
 <template>

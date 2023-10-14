@@ -31,7 +31,7 @@ export const paginatedTableProps = {
   sortableColumns: {
     type: Array,
     required: false,
-    default: []
+    default: [],
   },
 
   // USERS CAN SELECT ROWS (optional): defines if users can select rows for bulk actions.
@@ -40,6 +40,28 @@ export const paginatedTableProps = {
     type: Boolean,
     required: false,
     default: false,
+  },
+
+  // FREEZE FIRST COLUMN (optional): if true, the first column's position will be fixed
+  // when scrolling horizontally. The first column excludes the selection column if enabled.
+  freezeFirstColumn: {
+    type: Boolean,
+    required: false,
+    default: true,
+  },
+
+  // SEARCH PARAMS: a URLSearchParams object, to filter the results. This is to allow
+  // search bars and filters to be defined separately.
+  searchParams: {
+    type: URLSearchParams,
+    required: false,
+    default: null,
+  },
+
+  hiddenColumns: {
+    type: Array,
+    required: false,
+    default: [],
   },
 
   // TOTAL GETTER (optional): a function to get the total number of results from the response

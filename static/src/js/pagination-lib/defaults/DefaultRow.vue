@@ -13,6 +13,14 @@ const props = defineProps({
     required: false,
     default: [],
   },
+  usersCanSelectRows: {
+    type: Boolean,
+    required: true,
+  },
+  freezeFirstColumn: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const rowIdentifier = computed(() => props.row.id);
@@ -29,11 +37,23 @@ const rowCSSClass = computed(() =>
 const handleCheckboxToggle = (event) => {
   emit("row-selection-toggled", rowIdentifier.value, event.target.checked);
 };
+
+const getCellClass = (index) => {
+  if (index > 0) {
+    return;
+  }
+
+  if (!props.freezeFirstColumn) {
+    return;
+  }
+
+  return props.usersCanSelectRows ? "fixed-column" : "fixed-selection-column";
+};
 </script>
 
 <template>
   <tr :class="rowCSSClass">
-    <td>
+    <td v-if="props.usersCanSelectRows" class="fixed-selection-column">
       <input
         class="form-check-input"
         type="checkbox"
@@ -43,7 +63,7 @@ const handleCheckboxToggle = (event) => {
         @change="handleCheckboxToggle"
       />
     </td>
-    <td v-for="(cell, i) in row.values" :key="i">
+    <td v-for="(cell, i) in row.values" :key="i" :class="getCellClass(i)">
       {{ cell.value }}
     </td>
   </tr>
