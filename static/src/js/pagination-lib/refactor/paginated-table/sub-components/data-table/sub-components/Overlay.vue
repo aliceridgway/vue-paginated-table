@@ -10,7 +10,7 @@ const props = defineProps({
 });
 
 const cssClass = computed(() =>
-  props.cssClass ? props.cssClass : "pgt-overlay",
+  props.cssClass ? props.cssClass : "overlay",
 );
 </script>
 
@@ -20,8 +20,8 @@ const cssClass = computed(() =>
   </div>
 </template>
 
-<style>
-.pgt-overlay {
+<style scoped>
+.overlay {
   position: absolute;
   width: 100%;
   height: 100%;

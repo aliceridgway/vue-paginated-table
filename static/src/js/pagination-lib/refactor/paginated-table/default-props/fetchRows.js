@@ -1,6 +1,6 @@
 // Fetches row data from the endpoint in JSON format
 
-export default async function fetchRowsAsJson(page, resultsPerPage, baseURL, options) {
+export default async function fetchRows(page, resultsPerPage, baseURL, options) {
 
     const offset = resultsPerPage * (page - 1);
 
